@@ -548,11 +548,11 @@
             Console.WriteLine("The series score ended as {0} - {1}.", Team2Maps, Team1Maps)
         End If
         Console.WriteLine("Map Scores:")
-        Console.WriteLine("Map 1: {0}: {1} {2}", Map1Winner, Map1Score, Map1Loser)
-        Console.WriteLine("Map 2: {0}: {1} {2}", Map2Winner, Map2Score, Map2Loser)
+        Console.WriteLine("Map 1 ({0}): {1}: {2} {3}", ScrambledMapPool(0), Map1Winner, Map1Score, Map1Loser)
+        Console.WriteLine("Map 2 ({0}): {1}: {2} {3}", ScrambledMapPool(1), Map2Winner, Map2Score, Map2Loser)
         If Team1Maps = 2 And Team2Maps = 1 Then
         ElseIf Team1Maps = 1 And Team2Maps = 2 Then
-            Console.WriteLine("Map 3: {0}: {1} {2}", Map3Winner, Map3Score, Map3Loser)
+            Console.WriteLine("Map 3 ({0}): {1}: {2} {3}", ScrambledMapPool(2), Map3Winner, Map3Score, Map3Loser)
         End If
         Console.ReadLine()
         Main()
