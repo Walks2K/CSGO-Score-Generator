@@ -728,11 +728,8 @@
                 End If
                 'Begin round + round mechanics
                 RandomWinner = Rand.Next(0, 101)
-                If Team1Score = 45 And Team2Score < 45 Then
-                    RandomWinner = 100
-                End If
-                If Team2Score = 45 And Team1Score < 45 Then
-                    RandomWinner = 0
+                If Team1Score = 15 And Team2Score = 15 Then
+                    Exit For
                 End If
                 Console.WriteLine("Round {0} has begun...", i)
                 System.Threading.Thread.Sleep(Rand.Next(1000, 2001))
@@ -760,7 +757,7 @@
             Loop
             If BestOf = 0 Then
                 System.Threading.Thread.Sleep(Rand.Next(500, 1501))
-                DetermWin()
+                Exit Sub
             End If
             System.Threading.Thread.Sleep(Rand.Next(1500, 3001))
             If Team1Score > Team2Score Then
@@ -860,9 +857,11 @@
             Console.WriteLine("The game ended as a draw.")
         End If
         If Winner = Team1 Then
-            Console.WriteLine("The score ended as {0} - {1}.", Team1Score, Team2Score)
+            Console.WriteLine("Map Score:")
+            Console.WriteLine("Map 1 ({0}): {1}: {2} - {3}: {4}", ScrambledMapPool(0), Team1, Team1Score, Team2, Team2Score)
         Else
-            Console.WriteLine("The score ended as {0} - {1}.", Team2Score, Team1Score)
+            Console.WriteLine("Map Score:")
+            Console.WriteLine("Map 1 ({0}): {1}: {2} - {3}: {4}", ScrambledMapPool(0), Team2, Team2Score, Team1, Team1Score)
         End If
         Console.ReadLine()
         Main()
