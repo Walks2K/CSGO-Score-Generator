@@ -665,8 +665,6 @@
             Next
 
             Console.Clear()
-
-
             'Winning Scores
             Dim WinningScores(10) As Integer
             WinningScores(0) = "16"
@@ -730,8 +728,11 @@
                 End If
                 'Begin round + round mechanics
                 RandomWinner = Rand.Next(0, 101)
-                If Team1Score = 15 And Team2Score = 15 Then
-                    Exit For
+                If Team1Score = 45 And Team2Score < 45 Then
+                    RandomWinner = 100
+                End If
+                If Team2Score = 45 And Team1Score < 45 Then
+                    RandomWinner = 0
                 End If
                 Console.WriteLine("Round {0} has begun...", i)
                 System.Threading.Thread.Sleep(Rand.Next(1000, 2001))
@@ -757,29 +758,59 @@
                     End If
                 End If
             Loop
-
             If BestOf = 0 Then
                 System.Threading.Thread.Sleep(Rand.Next(500, 1501))
                 DetermWin()
             End If
-
             System.Threading.Thread.Sleep(Rand.Next(1500, 3001))
-
             If Team1Score > Team2Score Then
                 Team1Maps = Team1Maps + 1
                 Console.WriteLine("{0} have took Map {1}", Team1, ScrambledMapPool(MapsPlayed))
-            End If
-
-            If Team2Score > Team1Score Then
+            Else
                 Team2Maps = Team2Maps + 1
                 Console.WriteLine("{0} have took Map {1}", Team2, ScrambledMapPool(MapsPlayed))
+            End If
+
+            If MapsPlayed = 0 And Team1Score > Team2Score Then
+                Map1Winner = Team1
+                Map1Loser = Team2
+                Map1Score = String.Join(" - ", Team1Score, Team2Score)
+            End If
+
+            If MapsPlayed = 0 And Team1Score < Team2Score Then
+                Map1Winner = Team2
+                Map1Loser = Team1
+                Map1Score = String.Join(" - ", Team2Score, Team1Score)
+            End If
+
+            If MapsPlayed = 1 And Team1Score > Team2Score Then
+                Map2Winner = Team1
+                Map2Loser = Team2
+                Map2Score = String.Join(" - ", Team1Score, Team2Score)
+            End If
+
+            If MapsPlayed = 1 And Team1Score < Team2Score Then
+                Map2Winner = Team2
+                Map2Loser = Team1
+                Map2Score = String.Join(" - ", Team2Score, Team1Score)
+            End If
+
+            If MapsPlayed = 2 And Team1Score > Team2Score Then
+                Map3Winner = Team1
+                Map3Loser = Team2
+                Map3Score = String.Join(" - ", Team1Score, Team2Score)
+            End If
+
+            If MapsPlayed = 2 And Team1Score < Team2Score Then
+                Map3Winner = Team2
+                Map3Loser = Team1
+                Map3Score = String.Join(" - ", Team2Score, Team1Score)
             End If
 
             If Team1Maps = 2 Then
                 System.Threading.Thread.Sleep(Rand.Next(1500, 3001))
                 Exit For
             End If
-
             If Team2Maps = 2 Then
                 System.Threading.Thread.Sleep(Rand.Next(1500, 3001))
                 Exit For
@@ -798,9 +829,16 @@
             Console.WriteLine("The winner is {0}.", Winner)
         End If
         If Winner = Team1 Then
-            Console.WriteLine("The score ended as {0} - {1}.", Team1Maps, Team2Maps)
+            Console.WriteLine("The series score ended as {0} - {1}.", Team1Maps, Team2Maps)
         Else
-            Console.WriteLine("The score ended as {0} - {1}.", Team2Maps, Team1Maps)
+            Console.WriteLine("The series score ended as {0} - {1}.", Team2Maps, Team1Maps)
+        End If
+        Console.WriteLine("Map Scores:")
+        Console.WriteLine("Map 1 ({0}): {1}: {2} {3}", ScrambledMapPool(0), Map1Winner, Map1Score, Map1Loser)
+        Console.WriteLine("Map 2 ({0}): {1}: {2} {3}", ScrambledMapPool(1), Map2Winner, Map2Score, Map2Loser)
+        If Team1Maps = 2 And Team2Maps = 1 Then
+        ElseIf Team1Maps = 1 And Team2Maps = 2 Then
+            Console.WriteLine("Map 3 ({0}): {1}: {2} {3}", ScrambledMapPool(2), Map3Winner, Map3Score, Map3Loser)
         End If
         Console.ReadLine()
         Main()
