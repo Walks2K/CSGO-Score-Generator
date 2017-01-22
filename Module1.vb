@@ -27,6 +27,7 @@
     Public Map1Loser As String
     Public Map2Loser As String
     Public Map3Loser As String
+    Public ChooseMaps As Boolean = False
 
 
     Public Sub Main()
@@ -54,24 +55,38 @@
         MapPool(4) = "Nuke"
         MapPool(5) = "Overpass"
         MapPool(6) = "Train"
-        Array.Clear(ScrambledMapPool, 0, ScrambledMapPool.Length)
-        For i = 0 To 6
-            Dim RandomMap As Integer
-            RandomMap = Rand.Next(0, 7)
-            While ScrambledMapPool.Contains(MapPool(RandomMap))
+        If ChooseMaps = False Then
+            Array.Clear(ScrambledMapPool, 0, ScrambledMapPool.Length)
+            For i = 0 To 6
+                Dim RandomMap As Integer
                 RandomMap = Rand.Next(0, 7)
-            End While
-            ScrambledMapPool(i) = MapPool(RandomMap)
-        Next
+                While ScrambledMapPool.Contains(MapPool(RandomMap))
+                    RandomMap = Rand.Next(0, 7)
+                End While
+                ScrambledMapPool(i) = MapPool(RandomMap)
+            Next
+        End If
+
         Console.WriteLine("Welcome to the CSGO score prediction maker!" & vbCrLf & "What would you like to do?")
         Console.WriteLine("1. Setup Game")
         Console.WriteLine("2. Configure Options")
+        Console.WriteLine("3. Select Maps")
+        Console.WriteLine("4. Manual Maps?: {0}", ChooseMaps)
         Dim UserChoice As String = Console.ReadLine
         Select Case UserChoice
             Case 1
                 GameSetup()
             Case 2
                 Configure()
+            Case 3
+                Maps()
+            Case 4
+                If ChooseMaps = True Then
+                    ChooseMaps = False
+                Else
+                    ChooseMaps = True
+                End If
+                Main()
             Case Else
                 Main()
         End Select
@@ -145,6 +160,25 @@
         End If
     End Sub
     Sub OvertimeTrue()
+        MapPool(0) = "Cache"
+        MapPool(1) = "Cobblestone"
+        MapPool(2) = "Dust 2"
+        MapPool(3) = "Mirage"
+        MapPool(4) = "Nuke"
+        MapPool(5) = "Overpass"
+        MapPool(6) = "Train"
+        If ChooseMaps = False Then
+            Array.Clear(ScrambledMapPool, 0, ScrambledMapPool.Length)
+            For i = 0 To 6
+                Dim RandomMap As Integer
+                RandomMap = Rand.Next(0, 7)
+                While ScrambledMapPool.Contains(MapPool(RandomMap))
+                    RandomMap = Rand.Next(0, 7)
+                End While
+                ScrambledMapPool(i) = MapPool(RandomMap)
+            Next
+        End If
+        Dim StartingSide As String = "0"
         Console.Clear()
         Console.WriteLine("What format will the overtime be?" & vbCrLf & "1. MR6" & vbCrLf & "2. MR10")
         Dim OvertimeFormat As String = Console.ReadLine
@@ -178,37 +212,37 @@
                 Console.WriteLine("")
                 Console.WriteLine("Series Score: {0}: {1} - {2}: {3}", Team1, Team1Maps, Team2, Team2Maps)
             End If
-            If ScrambledMapPool(0) = "Cache" Then
+            If ScrambledMapPool(MapsPlayed) = "Cache" Then
                 SideCTPercent = 54
                 SideTPercent = 46
             End If
 
-            If ScrambledMapPool(0) = "Dust 2" Then
+            If ScrambledMapPool(MapsPlayed) = "Dust 2" Then
                 SideCTPercent = 49
                 SideTPercent = 51
             End If
 
-            If ScrambledMapPool(0) = "Cobblestone" Then
+            If ScrambledMapPool(MapsPlayed) = "Cobblestone" Then
                 SideCTPercent = 52
                 SideTPercent = 48
             End If
 
-            If ScrambledMapPool(0) = "Mirage" Then
+            If ScrambledMapPool(MapsPlayed) = "Mirage" Then
                 SideCTPercent = 54
                 SideTPercent = 46
             End If
 
-            If ScrambledMapPool(0) = "Nuke" Then
+            If ScrambledMapPool(MapsPlayed) = "Nuke" Then
                 SideCTPercent = 60
                 SideTPercent = 40
             End If
 
-            If ScrambledMapPool(0) = "Overpass" Then
+            If ScrambledMapPool(MapsPlayed) = "Overpass" Then
                 SideCTPercent = 57
                 SideTPercent = 43
             End If
 
-            If ScrambledMapPool(0) = "Train" Then
+            If ScrambledMapPool(MapsPlayed) = "Train" Then
                 SideCTPercent = 70
                 SideTPercent = 30
             End If
@@ -247,6 +281,26 @@
                     End If
                     SideCT = Team2
                     SideT = Team1
+                End If
+            Else
+                Console.WriteLine("Select the starting side of {0} now.", Team1)
+                Console.WriteLine("1. CT")
+                Console.WriteLine("2. T")
+                StartingSide = Console.ReadLine
+                While StartingSide <> "1" And StartingSide <> "2"
+                    Console.WriteLine("That is not valid, try again.")
+                    StartingSide = Console.ReadLine
+                End While
+                If StartingSide = "1" Then
+                    SideCT = Team1
+                    Team1Side = "CT"
+                    SideT = Team2
+                    Team2Side = "T"
+                Else
+                    SideT = Team1
+                    Team1Side = "T"
+                    SideCT = Team2
+                    Team2Side = "CT"
                 End If
             End If
 
@@ -558,6 +612,25 @@
         Main()
     End Sub
     Sub OvertimeFalse()
+        MapPool(0) = "Cache"
+        MapPool(1) = "Cobblestone"
+        MapPool(2) = "Dust 2"
+        MapPool(3) = "Mirage"
+        MapPool(4) = "Nuke"
+        MapPool(5) = "Overpass"
+        MapPool(6) = "Train"
+        If ChooseMaps = False Then
+            Array.Clear(ScrambledMapPool, 0, ScrambledMapPool.Length)
+            For i = 0 To 6
+                Dim RandomMap As Integer
+                RandomMap = Rand.Next(0, 7)
+                While ScrambledMapPool.Contains(MapPool(RandomMap))
+                    RandomMap = Rand.Next(0, 7)
+                End While
+                ScrambledMapPool(i) = MapPool(RandomMap)
+            Next
+        End If
+        Dim StartingSide As String = "0"
         For MapsPlayed As Integer = 0 To BestOf
             Team1Score = 0
             Team2Score = 0
@@ -652,6 +725,26 @@
                     End If
                     SideCT = Team2
                     SideT = Team1
+                End If
+            Else
+                Console.WriteLine("Select the starting side of {0} now.", Team1)
+                Console.WriteLine("1. CT")
+                Console.WriteLine("2. T")
+                StartingSide = Console.ReadLine
+                While StartingSide <> "1" And StartingSide <> "2"
+                    Console.WriteLine("That is not valid, try again.")
+                    StartingSide = Console.ReadLine
+                End While
+                If StartingSide = "1" Then
+                    SideCT = Team1
+                    Team1Side = "CT"
+                    SideT = Team2
+                    Team2Side = "T"
+                Else
+                    SideT = Team1
+                    Team1Side = "T"
+                    SideCT = Team2
+                    Team2Side = "CT"
                 End If
             End If
 
@@ -863,6 +956,43 @@
             Console.WriteLine("Map Score:")
             Console.WriteLine("Map 1 ({0}): {1}: {2} - {3}: {4}", ScrambledMapPool(0), Team2, Team2Score, Team1, Team1Score)
         End If
+        Console.ReadLine()
+        Main()
+    End Sub
+    Sub Maps()
+        ChooseMaps = True
+        MapPool(0) = "Cache"
+        MapPool(1) = "Cobblestone"
+        MapPool(2) = "Dust 2"
+        MapPool(3) = "Mirage"
+        MapPool(4) = "Nuke"
+        MapPool(5) = "Overpass"
+        MapPool(6) = "Train"
+        Array.Clear(ScrambledMapPool, 0, ScrambledMapPool.Length)
+        For i = 0 To 2
+            Console.Clear()
+            Console.WriteLine("Choose a map:")
+            For maps As Integer = 0 To 6
+                Console.Write("{0}. ", maps)
+                Console.Write(MapPool(maps))
+                Console.WriteLine("")
+            Next
+            Dim UserMap As String
+            UserMap = Console.ReadLine
+            While ScrambledMapPool.Contains(MapPool(UserMap))
+                Console.WriteLine("That is already part of the map pool, try again.")
+                UserMap = Console.ReadLine
+            End While
+            For maps As Integer = 0 To 6
+                If UserMap = maps Then
+                    ScrambledMapPool(i) = MapPool(UserMap)
+                End If
+            Next
+        Next
+        Console.Clear()
+        For i = 0 To 2
+            Console.WriteLine(ScrambledMapPool(i))
+        Next
         Console.ReadLine()
         Main()
     End Sub
