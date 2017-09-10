@@ -7,3 +7,13 @@ C:\Users\Neil\Documents\Visual Studio 2012\Projects\CSGO-Score-Generator\CSGO-Sc
 C:\Users\Neil\Documents\Visual Studio 2012\Projects\CSGO-Score-Generator\CSGO-Score-Generator\obj\Debug\CSGO-Score-Generator.exe
 C:\Users\Neil\Documents\Visual Studio 2012\Projects\CSGO-Score-Generator\CSGO-Score-Generator\obj\Debug\CSGO-Score-Generator.xml
 C:\Users\Neil\Documents\Visual Studio 2012\Projects\CSGO-Score-Generator\CSGO-Score-Generator\obj\Debug\CSGO-Score-Generator.pdb
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\bin\Debug\CSGO-Score-Generator.exe.config
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\bin\Debug\CSGO-Score-Generator.exe
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\bin\Debug\CSGO-Score-Generator.pdb
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\bin\Debug\CSGO-Score-Generator.xml
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\obj\Debug\CSGO-Score-Generator.vbprojResolveAssemblyReference.cache
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\obj\Debug\CSGO_Score_Generator.Resources.resources
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\obj\Debug\CSGO-Score-Generator.vbproj.GenerateResource.Cache
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\obj\Debug\CSGO-Score-Generator.exe
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\obj\Debug\CSGO-Score-Generator.xml
+C:\Users\Neil\Documents\Visual Studio 2017\Projects\CSGO-Score-Generator\CSGO-Score-Generator\obj\Debug\CSGO-Score-Generator.pdb
