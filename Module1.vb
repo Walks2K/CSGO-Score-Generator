@@ -38,6 +38,8 @@
 	Public PlayerDeaths(9) As Integer
 	Public PlayerKillsTotal(6, 9) As Integer
 	Public PlayerDeathsTotal(6, 9) As Integer
+	Public PlayerKillsWeapons As DataTable = GetTable()
+	Public PlayerKillsWeaponsTotal As DataTable = GetTable()
 	Public PlayerMoney(9) As Integer
 	Public PlayerWeapons(1, 9)
 	Public Team1Force As Integer
@@ -73,14 +75,13 @@
 	{"Space Soldiers", "MAJ3R", "XANTARES", "Calyx", "paz", "ngiN", "60"}}
 	Public SlowDown As Boolean = False
 	Public SimulateGames As Boolean = False
+	Public ReportBuys As Boolean = False
 	Public FullBuyCT(,) As String =
-		{{"", "0", "0"},
-		{"Famas", "2250", "300"},
+		{{"Famas", "2250", "300"},
 		{"M4", "3100", "300"},
 		{"AWP", "4750", "150"}}
 	Public FullBuyT(,) As String =
-		{{"", "0", "0"},
-		{"Galil", "2000", "300"},
+		{{"UMP-45", "1200", "600"},
 		{"AK-47", "2700", "300"},
 		{"AWP", "4750", "300"}}
 	Public PistolBuyCT(,) As String =
@@ -100,6 +101,8 @@
 		{"Glock", "0", "300"}}
 	Public Sub Main()
 		Console.Clear()
+		PlayerKillsWeapons.Clear()
+		PlayerKillsWeaponsTotal.Clear()
 		RandomWinner = Rand.Next(0, 101)
 		Team1Score = 0
 		Team2Score = 0
@@ -181,6 +184,7 @@
 		Console.WriteLine("2. Knife Round: {0}", KnifeRound)
 		Console.WriteLine("3. Slow Down: {0}", SlowDown)
 		Console.WriteLine("4. Clear Console at Halftimes: {0}", ClearConsole)
+		Console.WriteLine("5. Show weapon purchases (mostly debugging purpose): {0}", ReportBuys)
 		Console.WriteLine("9. Home")
 
 		Dim UserChoice As String = Console.ReadLine
@@ -211,6 +215,13 @@
 					ClearConsole = False
 				Else
 					ClearConsole = True
+				End If
+				Configure()
+			Case 5
+				If ReportBuys = True Then
+					ReportBuys = False
+				Else
+					ReportBuys = True
 				End If
 				Configure()
 			Case 9
@@ -557,6 +568,49 @@
 						Console.WriteLine("")
 						Sleeping()
 					End If
+
+					'Halftime logic
+					If HalfTimes.Contains(i) Then
+						If SideCT = Team1 And SideT = Team2 Then
+							SideCT = Team2
+							SideT = Team1
+							Team1Side = "T"
+							Team2Side = "CT"
+						Else
+							SideCT = Team1
+							SideT = Team2
+							Team1Side = "CT"
+							Team2Side = "T"
+						End If
+						If i > 16 Then
+							For MoneySet = 0 To 9
+								PlayerMoney(MoneySet) = 10000
+							Next
+						End If
+					End If
+					If HalfTimes.Contains(i) And HalfTime = True Then
+						MapHalftimeScores(MapsPlayed, i / 15) = String.Join(" - ", Team1Score, Team2Score)
+						Dim Timer As Integer = 5
+						Sleeping()
+						If ClearConsole = True Then
+							Console.Clear()
+						End If
+						Console.WriteLine("Breaking for half time...")
+						Sleeping()
+						If SlowDown = True Then
+							For HalfTimeCount = 1 To 5
+								Console.WriteLine("Resuming in {0}...", Timer)
+								System.Threading.Thread.Sleep(1000)
+								Timer = Timer - 1
+								If HalfTimeCount = 5 Then
+									Console.Clear()
+								End If
+							Next
+						End If
+						Console.WriteLine("The score is currently ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+						Sleeping()
+					End If
+
 					'Pistol Round/Reset Logic
 					If PistolRounds.Contains(i) Then
 						For PlayerMoneyReset = 0 To 9
@@ -603,47 +657,7 @@
 							End If
 						Next
 					End If
-					'Halftime logic
-					If HalfTimes.Contains(i) Then
-						If SideCT = Team1 And SideT = Team2 Then
-							SideCT = Team2
-							SideT = Team1
-							Team1Side = "T"
-							Team2Side = "CT"
-						Else
-							SideCT = Team1
-							SideT = Team2
-							Team1Side = "CT"
-							Team2Side = "T"
-						End If
-						If i > 16 Then
-							For MoneySet = 0 To 9
-								PlayerMoney(MoneySet) = 10000
-							Next
-						End If
-					End If
-					If HalfTimes.Contains(i) And HalfTime = True Then
-						MapHalftimeScores(MapsPlayed, i / 15) = String.Join(" - ", Team1Score, Team2Score)
-						Dim Timer As Integer = 5
-						Sleeping()
-						If ClearConsole = True Then
-							Console.Clear()
-						End If
-						Console.WriteLine("Breaking for half time...")
-						Sleeping()
-						If SlowDown = True Then
-							For HalfTimeCount = 1 To 5
-								Console.WriteLine("Resuming in {0}...", Timer)
-								System.Threading.Thread.Sleep(1000)
-								Timer = Timer - 1
-								If HalfTimeCount = 5 Then
-									Console.Clear()
-								End If
-							Next
-						End If
-						Console.WriteLine("The score is currently ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-						Sleeping()
-					End If
+
 					'Begin round + round mechanics
 					RandomWinner = Rand.Next(0, 101)
 					If Team1Score = 45 And Team2Score < 45 Then
@@ -671,151 +685,8 @@
 					Next
 					MapsPlayedCounter = MapsPlayed
 
-					'Buy Logic
-					Dim Team1AwpCount As Integer = 0
-					Dim Team2AwpCount As Integer = 0
-					Dim GunBrought As Boolean = False
-
-					For AWPCheck = 0 To 4
-						If PlayerWeapons(0, AWPCheck) = "AWP" Then
-							Team1AwpCount = Team1AwpCount + 1
-						End If
-					Next
-
-					For AWPCheck = 5 To 9
-						If PlayerWeapons(0, AWPCheck) = "AWP" Then
-							Team2AwpCount = Team2AwpCount + 1
-						End If
-					Next
-
-					Dim ForceBuy As Integer = Rand.Next(0, 101)
-
-					If Team1 = SideCT Then
-						ForceBuy = Rand.Next(0, 101)
-						For BuyGuns = 0 To 4
-							GunBrought = False
-							For PriceCheck = FullBuyCT.GetLength(0) - 1 To 0 Step -1
-								If PlayerMoney(BuyGuns) > 0 And PlayerWeapons(0, BuyGuns) = "" And PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650 >= 0 Then
-									If FullBuyCT(PriceCheck, 0) = "AWP" Then
-										If Team1AwpCount <= 2 Then
-											PlayerWeapons(0, BuyGuns) = FullBuyCT(PriceCheck, 0)
-											PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650
-											GunBrought = True
-											Continue For
-										Else
-											Continue For
-										End If
-									End If
-									PlayerWeapons(0, BuyGuns) = FullBuyCT(PriceCheck, 0)
-									PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650
-									GunBrought = True
-								End If
-							Next
-
-							If ForceBuy > 50 Then
-								For PriceCheck = PistolBuyCT.GetLength(0) - 1 To 0 Step -1
-									If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1) > 0 And PlayerWeapons(0, BuyGuns) = "" Then
-										PlayerWeapons(PistolBuyCT(PriceCheck, 3), BuyGuns) = PistolBuyCT(PriceCheck, 0)
-										PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1)
-										GunBrought = True
-									End If
-								Next
-							End If
-						Next
-						ForceBuy = Rand.Next(0, 101)
-						For BuyGuns = 5 To 9
-							GunBrought = False
-							For PriceCheck = FullBuyT.GetLength(0) - 1 To 0 Step -1
-								If PlayerMoney(BuyGuns) > 0 And PlayerWeapons(0, BuyGuns) = "" And PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000 >= 0 Then
-									If FullBuyT(PriceCheck, 0) = "AWP" Then
-										If Team1AwpCount <= 2 Then
-											PlayerWeapons(0, BuyGuns) = FullBuyT(PriceCheck, 0)
-											PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000
-											GunBrought = True
-											Continue For
-										Else
-											Continue For
-										End If
-									End If
-									PlayerWeapons(0, BuyGuns) = FullBuyT(PriceCheck, 0)
-									PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000
-									GunBrought = True
-								End If
-							Next
-
-							If ForceBuy > 50 Then
-								For PriceCheck = PistolBuyT.GetLength(0) - 1 To 0 Step -1
-									If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1) > 0 And PlayerWeapons(0, BuyGuns) = "" Then
-										PlayerWeapons(PistolBuyT(PriceCheck, 3), BuyGuns) = PistolBuyT(PriceCheck, 0)
-										PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1)
-										GunBrought = True
-									End If
-								Next
-							End If
-						Next
-					Else
-						ForceBuy = Rand.Next(0, 101)
-						For BuyGuns = 0 To 4
-							GunBrought = False
-							For PriceCheck = FullBuyT.GetLength(0) - 1 To 0 Step -1
-								If PlayerMoney(BuyGuns) > 0 And PlayerWeapons(0, BuyGuns) = "" And PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000 >= 0 Then
-									If FullBuyT(PriceCheck, 0) = "AWP" Then
-										If Team1AwpCount <= 2 Then
-											PlayerWeapons(0, BuyGuns) = FullBuyT(PriceCheck, 0)
-											PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000
-											GunBrought = True
-											Continue For
-										Else
-											Continue For
-										End If
-									End If
-									PlayerWeapons(0, BuyGuns) = FullBuyT(PriceCheck, 0)
-									PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000
-									GunBrought = True
-								End If
-							Next
-
-							If ForceBuy > 50 Then
-								For PriceCheck = PistolBuyT.GetLength(0) - 1 To 0 Step -1
-									If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1) > 0 And PlayerWeapons(0, BuyGuns) = "" Then
-										PlayerWeapons(PistolBuyT(PriceCheck, 3), BuyGuns) = PistolBuyT(PriceCheck, 0)
-										PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1)
-										GunBrought = True
-									End If
-								Next
-							End If
-						Next
-						ForceBuy = Rand.Next(0, 101)
-						For BuyGuns = 5 To 9
-							GunBrought = False
-							For PriceCheck = FullBuyCT.GetLength(0) - 1 To 0 Step -1
-								If PlayerMoney(BuyGuns) > 0 And PlayerWeapons(0, BuyGuns) = "" And PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650 >= 0 Then
-									If FullBuyCT(PriceCheck, 0) = "AWP" Then
-										If Team1AwpCount <= 2 Then
-											PlayerWeapons(0, BuyGuns) = FullBuyCT(PriceCheck, 0)
-											PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650
-											GunBrought = True
-											Continue For
-										Else
-											Continue For
-										End If
-									End If
-									PlayerWeapons(0, BuyGuns) = FullBuyCT(PriceCheck, 0)
-									PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650
-									GunBrought = True
-								End If
-							Next
-							If ForceBuy > 50 Then
-								For PriceCheck = PistolBuyCT.GetLength(0) - 1 To 0 Step -1
-									If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1) > 0 And PlayerWeapons(0, BuyGuns) = "" Then
-										PlayerWeapons(PistolBuyCT(PriceCheck, 3), BuyGuns) = PistolBuyCT(PriceCheck, 0)
-										PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1)
-										GunBrought = True
-									End If
-								Next
-							End If
-						Next
-					End If
+					Dim FirstRun As Boolean = True
+					BuyLogic(i, FirstRun)
 
 					Scoreboard(SideCT, SideT)
 
@@ -836,6 +707,75 @@
 						PlayerDeaths(Victim) = PlayerDeaths(Victim) + 1
 						PlayerKillsTotal(MapsPlayed, Killer) = PlayerKillsTotal(MapsPlayed, Killer) + 1
 						PlayerDeathsTotal(MapsPlayed, Victim) = PlayerDeathsTotal(MapsPlayed, Victim) + 1
+
+						If PlayerWeapons(0, Killer) <> "" Then
+							Dim MatchFound As Boolean = False
+							For Each row As DataRow In PlayerKillsWeapons.Rows
+								If row(0) = PlayerWeapons(0, Killer) And row(2) = Players(Killer) And row(5) = MapsPlayedCounter Then
+									MatchFound = True
+									row.SetField(0, PlayerWeapons(0, Killer))
+									row.SetField(1, row.Field(Of Integer)(1) + 1)
+									row.SetField(2, Players(Killer))
+									row.SetField(3, Killer)
+									row.SetField(4, MapsPlayedList(MapsPlayed))
+									row.SetField(5, MapsPlayedCounter)
+								End If
+							Next
+
+							If MatchFound = False Then
+								PlayerKillsWeapons.Rows.Add(PlayerWeapons(0, Killer), 1, Players(Killer), Killer, MapsPlayedList(MapsPlayed), MapsPlayedCounter)
+							End If
+						Else
+							Dim MatchFound As Boolean = False
+							For Each row As DataRow In PlayerKillsWeapons.Rows
+								If row(0) = PlayerWeapons(1, Killer) And row(2) = Players(Killer) And row(5) = MapsPlayedCounter Then
+									MatchFound = True
+									row.SetField(0, PlayerWeapons(1, Killer))
+									row.SetField(1, row.Field(Of Integer)(1) + 1)
+									row.SetField(2, Players(Killer))
+									row.SetField(3, Killer)
+									row.SetField(4, MapsPlayedList(MapsPlayed))
+									row.SetField(5, MapsPlayedCounter)
+								End If
+							Next
+
+							If MatchFound = False Then
+								PlayerKillsWeapons.Rows.Add(PlayerWeapons(1, Killer), 1, Players(Killer), Killer, MapsPlayedList(MapsPlayed), MapsPlayedCounter)
+							End If
+						End If
+
+						If PlayerWeapons(0, Killer) <> "" Then
+							Dim MatchFound As Boolean = False
+							For Each row As DataRow In PlayerKillsWeaponsTotal.Rows
+								If row(0) = PlayerWeapons(0, Killer) And row(2) = Players(Killer) Then
+									MatchFound = True
+									row.SetField(0, PlayerWeapons(0, Killer))
+									row.SetField(1, row.Field(Of Integer)(1) + 1)
+									row.SetField(2, Players(Killer))
+									row.SetField(3, Killer)
+								End If
+							Next
+
+							If MatchFound = False Then
+								PlayerKillsWeaponsTotal.Rows.Add(PlayerWeapons(0, Killer), 1, Players(Killer), Killer, MapsPlayedList(MapsPlayedCounter), MapsPlayedCounter)
+							End If
+						Else
+							Dim MatchFound As Boolean = False
+							For Each row As DataRow In PlayerKillsWeaponsTotal.Rows
+								If row(0) = PlayerWeapons(1, Killer) And row(2) = Players(Killer) Then
+									MatchFound = True
+									row.SetField(0, PlayerWeapons(1, Killer))
+									row.SetField(1, row.Field(Of Integer)(1) + 1)
+									row.SetField(2, Players(Killer))
+									row.SetField(3, Killer)
+								End If
+							Next
+
+							If MatchFound = False Then
+								PlayerKillsWeaponsTotal.Rows.Add(PlayerWeapons(1, Killer), 1, Players(Killer), Killer, MapsPlayedList(MapsPlayedCounter), MapsPlayedCounter)
+							End If
+						End If
+
 						Dim KillRewardDone As Boolean = False
 
 						Do Until KillRewardDone = True
@@ -949,41 +889,44 @@
 							End If
 						Loop
 						Sleeping()
-							Dim PlayersDeadListTeam1 As New List(Of String)
-							Dim PlayersDeadListTeam2 As New List(Of String)
-							For alive = 0 To 4
-								If PlayersAlive(alive) = "Dead" Then
-									PlayersDeadListTeam1.Add(PlayersAlive(alive))
-								End If
-							Next
-							For alive = 5 To 9
-								If PlayersAlive(alive) = "Dead" Then
-									PlayersDeadListTeam2.Add(PlayersAlive(alive))
-								End If
-							Next
-							If PlayersDeadListTeam1.Count = "5" Then
-								Team2Score = Team2Score + 1
+
+						Dim PlayersDeadListTeam1 As New List(Of String)
+						Dim PlayersDeadListTeam2 As New List(Of String)
+						For alive = 0 To 4
+							If PlayersAlive(alive) = "Dead" Then
+								PlayersDeadListTeam1.Add(PlayersAlive(alive))
+							End If
+						Next
+						For alive = 5 To 9
+							If PlayersAlive(alive) = "Dead" Then
+								PlayersDeadListTeam2.Add(PlayersAlive(alive))
+							End If
+						Next
+
+						If PlayersDeadListTeam1.Count = "5" Then
+							Team2Score = Team2Score + 1
 							For PlayerBonus = 5 To 9
 								PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + 3250
 							Next
 							Team2LossBonus = 1400
-							Team1LossBonus = Team1LossBonus + 500
 							For PlayerBonus = 0 To 4
 								PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + Team1LossBonus
 							Next
+							Team1LossBonus = Team1LossBonus + 500
 							Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-								RoundOver = True
-							End If
-							If PlayersDeadListTeam2.Count = "5" Then
+							RoundOver = True
+						End If
+
+						If PlayersDeadListTeam2.Count = "5" Then
 								Team1Score = Team1Score + 1
 							For PlayerBonus = 0 To 4
 								PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + 3250
 							Next
 							Team1LossBonus = 1400
-							Team2LossBonus = Team1LossBonus + 500
 							For PlayerBonus = 5 To 9
 								PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + Team2LossBonus
 							Next
+							Team2LossBonus = Team2LossBonus + 500
 							Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
 								RoundOver = True
 							End If
@@ -1280,7 +1223,9 @@
 		Console.WriteLine("1. Scores")
 		Console.WriteLine("2. Stats Overall")
 		Console.WriteLine("3. Stats Per Map")
-		Console.WriteLine("4. Main Menu")
+		Console.WriteLine("4. Best Weapons Overall")
+		Console.WriteLine("5. Best Weapons Per Map")
+		Console.WriteLine("6. Main Menu")
 		Dim UserInput As String = Console.ReadLine
 		Select Case UserInput
 			Case 1
@@ -1290,6 +1235,10 @@
 			Case 3
 				ScoreboardPerMap()
 			Case 4
+				Stats()
+			Case 5
+				StatsPerMap()
+			Case 6
 				Main()
 			Case Else
 				DetermWinBO3()
@@ -1318,10 +1267,17 @@
 			Next
 			Dim UserMap As String
 			UserMap = Console.ReadLine
-			While ScrambledMapPool.Contains(MapPool(UserMap))
-				Console.WriteLine("That is already part of the map pool, try again.")
-				UserMap = Console.ReadLine
-			End While
+			Try
+				If UserMap > 6 Or UserMap < 0 Then
+					Maps()
+				End If
+			Catch ex As Exception
+				Maps()
+			End Try
+			'While ScrambledMapPool.Contains(MapPool(UserMap))
+			'	Console.WriteLine("That is already part of the map pool, try again.")
+			'	UserMap = Console.ReadLine
+			'End While
 			For maps As Integer = 0 To 6
 				If UserMap = maps Then
 					ScrambledMapPool(i) = MapPool(UserMap)
@@ -2084,6 +2040,383 @@
 		End Select
 		Console.ReadLine()
 		DetermWinSimulate()
+	End Sub
+
+	Function BuyLogic(ByVal i, ByVal FirstRun)
+		'Buy Logic
+		Dim Team1AwpCount As Integer = 0
+		Dim Team2AwpCount As Integer = 0
+		Dim GunBrought As Boolean = False
+
+		For AWPCheck = 0 To 4
+			If PlayerWeapons(0, AWPCheck) = "AWP" Then
+				Team1AwpCount = Team1AwpCount + 1
+			End If
+		Next
+
+		For AWPCheck = 5 To 9
+			If PlayerWeapons(0, AWPCheck) = "AWP" Then
+				Team2AwpCount = Team2AwpCount + 1
+			End If
+		Next
+
+		Dim ForceBuy As Integer = Rand.Next(0, 101)
+
+		If Team1 = SideCT Then
+			ForceBuy = Rand.Next(0, 101)
+			GunBrought = False
+			If i = 2 Or i = 17 Then
+				If ForceBuy < Team1Force Or Team1LossBonus = 1400 Then
+					For BuyGuns = 0 To 4
+						For PriceCheck = PistolBuyCT.GetLength(0) - 1 To 0 Step -1
+							If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1) - 1000 > 0 And PlayerWeapons(0, BuyGuns) = "" Then
+								PlayerWeapons(PistolBuyCT(PriceCheck, 3), BuyGuns) = PistolBuyCT(PriceCheck, 0)
+								PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1) - 1000
+								If ReportBuys = True Then
+									Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), PistolBuyCT(PriceCheck, 0), PistolBuyCT(PriceCheck, 1) + 1000)
+								End If
+								GunBrought = True
+							End If
+						Next
+					Next
+				End If
+			Else
+				For BuyGuns = 0 To 4
+					If PlayerWeapons(0, BuyGuns) <> "" Then
+						GunBrought = True
+					Else
+						GunBrought = False
+					End If
+					For PriceCheck = FullBuyCT.GetLength(0) - 1 To 0 Step -1
+						If PlayerMoney(BuyGuns) > 0 And PlayerWeapons(0, BuyGuns) = "" And PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650 >= 0 Then
+							If FullBuyCT(PriceCheck, 0) = "AWP" Then
+								If Team1AwpCount < 2 Then
+									PlayerWeapons(0, BuyGuns) = FullBuyCT(PriceCheck, 0)
+									PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650
+									GunBrought = True
+									If ReportBuys = True Then
+										Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), FullBuyCT(PriceCheck, 0), FullBuyCT(PriceCheck, 1) + 650)
+									End If
+									Team1AwpCount = Team1AwpCount + 1
+									Continue For
+								Else
+									Continue For
+								End If
+							End If
+							PlayerWeapons(0, BuyGuns) = FullBuyCT(PriceCheck, 0)
+							PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650
+							If ReportBuys = True Then
+								Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), FullBuyCT(PriceCheck, 0), FullBuyCT(PriceCheck, 1) + 650)
+							End If
+							GunBrought = True
+						End If
+					Next
+
+					If ForceBuy < Team1Force Or GunBrought = True Then
+						For PriceCheck = PistolBuyCT.GetLength(0) - 1 To 0 Step -1
+							If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1) > 0 And PlayerWeapons(0, BuyGuns) = "" Then
+								PlayerWeapons(PistolBuyCT(PriceCheck, 3), BuyGuns) = PistolBuyCT(PriceCheck, 0)
+								PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1)
+								If ReportBuys = True Then
+									Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), PistolBuyCT(PriceCheck, 0), PistolBuyCT(PriceCheck, 1))
+								End If
+								GunBrought = True
+							End If
+						Next
+					End If
+				Next
+			End If
+
+			ForceBuy = Rand.Next(0, 101)
+
+			If i = 2 Or i = 17 Then
+				If ForceBuy < Team2Force Or Team2Force = 1400 Then
+					For BuyGuns = 5 To 9
+						For PriceCheck = PistolBuyT.GetLength(0) - 1 To 0 Step -1
+							If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1) - 1000 > 0 And PlayerWeapons(0, BuyGuns) = "" Then
+								PlayerWeapons(PistolBuyT(PriceCheck, 3), BuyGuns) = PistolBuyT(PriceCheck, 0)
+								PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1) - 1000
+								If ReportBuys = True Then
+									Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), PistolBuyT(PriceCheck, 0), PistolBuyT(PriceCheck, 1) + 1000)
+								End If
+								GunBrought = True
+							End If
+						Next
+					Next
+				End If
+			Else
+				For BuyGuns = 5 To 9
+					If PlayerWeapons(0, BuyGuns) <> "" Then
+						GunBrought = True
+					Else
+						GunBrought = False
+					End If
+					For PriceCheck = FullBuyT.GetLength(0) - 1 To 0 Step -1
+						If PlayerMoney(BuyGuns) > 0 And PlayerWeapons(0, BuyGuns) = "" And PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000 >= 0 Then
+							If FullBuyT(PriceCheck, 0) = "AWP" Then
+								If Team2AwpCount < 2 Then
+									PlayerWeapons(0, BuyGuns) = FullBuyT(PriceCheck, 0)
+									PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000
+									GunBrought = True
+									If ReportBuys = True Then
+										Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), FullBuyT(PriceCheck, 0), FullBuyT(PriceCheck, 1) + 1000)
+									End If
+									Team2AwpCount = Team2AwpCount + 1
+									Continue For
+								Else
+									Continue For
+								End If
+							End If
+							PlayerWeapons(0, BuyGuns) = FullBuyT(PriceCheck, 0)
+							PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000
+							If ReportBuys = True Then
+								Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), FullBuyT(PriceCheck, 0), FullBuyT(PriceCheck, 1) + 1000)
+							End If
+							GunBrought = True
+						End If
+					Next
+
+					If ForceBuy < Team2Force Or GunBrought = True Then
+						For PriceCheck = PistolBuyT.GetLength(0) - 1 To 0 Step -1
+							If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1) > 0 And PlayerWeapons(0, BuyGuns) = "" Then
+								PlayerWeapons(PistolBuyT(PriceCheck, 3), BuyGuns) = PistolBuyT(PriceCheck, 0)
+								PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1)
+								If ReportBuys = True Then
+									Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), PistolBuyT(PriceCheck, 0), PistolBuyT(PriceCheck, 1) + 1000)
+								End If
+								GunBrought = True
+							End If
+						Next
+					End If
+				Next
+			End If
+		Else
+			ForceBuy = Rand.Next(0, 101)
+			If i = 2 Or i = 17 Then
+				If ForceBuy < Team1Force Or Team1Force = 1400 Then
+					For BuyGuns = 0 To 4
+						For PriceCheck = PistolBuyT.GetLength(0) - 1 To 0 Step -1
+							If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1) - 1000 > 0 And PlayerWeapons(0, BuyGuns) = "" Then
+								PlayerWeapons(PistolBuyT(PriceCheck, 3), BuyGuns) = PistolBuyT(PriceCheck, 0)
+								PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1) - 1000
+								If ReportBuys = True Then
+									Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), PistolBuyT(PriceCheck, 0), PistolBuyT(PriceCheck, 1) + 1000)
+								End If
+								GunBrought = True
+							End If
+						Next
+					Next
+				End If
+			Else
+				For BuyGuns = 0 To 4
+					If PlayerWeapons(0, BuyGuns) <> "" Then
+						GunBrought = True
+					Else
+						GunBrought = False
+					End If
+					For PriceCheck = FullBuyT.GetLength(0) - 1 To 0 Step -1
+						If PlayerMoney(BuyGuns) > 0 And PlayerWeapons(0, BuyGuns) = "" And PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000 >= 0 Then
+							If FullBuyT(PriceCheck, 0) = "AWP" Then
+								If Team1AwpCount < 2 Then
+									PlayerWeapons(0, BuyGuns) = FullBuyT(PriceCheck, 0)
+									PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000
+									If ReportBuys = True Then
+										Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), FullBuyT(PriceCheck, 0), FullBuyT(PriceCheck, 1) + 1000)
+									End If
+									Team1AwpCount = Team1AwpCount + 1
+									GunBrought = True
+									Continue For
+								Else
+									Continue For
+								End If
+							End If
+							PlayerWeapons(0, BuyGuns) = FullBuyT(PriceCheck, 0)
+							PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyT(PriceCheck, 1) - 1000
+							If ReportBuys = True Then
+								Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), FullBuyT(PriceCheck, 0), FullBuyT(PriceCheck, 1) + 1000)
+							End If
+							GunBrought = True
+						End If
+					Next
+
+					If ForceBuy < Team1Force Then
+						For PriceCheck = PistolBuyT.GetLength(0) - 1 To 0 Step -1
+							If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1) - 1000 > 0 And PlayerWeapons(0, BuyGuns) = "" Then
+								PlayerWeapons(PistolBuyT(PriceCheck, 3), BuyGuns) = PistolBuyT(PriceCheck, 0)
+								PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyT(PriceCheck, 1) - 1000
+								If ReportBuys = True Then
+									Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), PistolBuyT(PriceCheck, 0), PistolBuyT(PriceCheck, 1) + 1000)
+								End If
+								GunBrought = True
+							End If
+						Next
+					End If
+				Next
+			End If
+
+			ForceBuy = Rand.Next(0, 101)
+			If i = 2 Or i = 17 Then
+				If ForceBuy < Team2Force Or Team2Force = 1400 Then
+					For BuyGuns = 5 To 9
+						For PriceCheck = PistolBuyCT.GetLength(0) - 1 To 0 Step -1
+							If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1) - 1000 > 0 And PlayerWeapons(0, BuyGuns) = "" Then
+								PlayerWeapons(PistolBuyCT(PriceCheck, 3), BuyGuns) = PistolBuyCT(PriceCheck, 0)
+								PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1) - 1000
+								If ReportBuys = True Then
+									Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), PistolBuyCT(PriceCheck, 0), PistolBuyCT(PriceCheck, 1) + 1000)
+								End If
+								GunBrought = True
+							End If
+						Next
+					Next
+				End If
+			Else
+				For BuyGuns = 5 To 9
+					If PlayerWeapons(0, BuyGuns) <> "" Then
+						GunBrought = True
+					Else
+						GunBrought = False
+					End If
+					For PriceCheck = FullBuyCT.GetLength(0) - 1 To 0 Step -1
+						If PlayerMoney(BuyGuns) > 0 And PlayerWeapons(0, BuyGuns) = "" And PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650 >= 0 Then
+							If FullBuyCT(PriceCheck, 0) = "AWP" Then
+								If Team2AwpCount < 2 Then
+									PlayerWeapons(0, BuyGuns) = FullBuyCT(PriceCheck, 0)
+									PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650
+									If ReportBuys = True Then
+										Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), FullBuyCT(PriceCheck, 0), FullBuyCT(PriceCheck, 1) + 1000)
+									End If
+									Team2AwpCount = Team2AwpCount + 1
+									GunBrought = True
+									Continue For
+								Else
+									Continue For
+								End If
+							End If
+							PlayerWeapons(0, BuyGuns) = FullBuyCT(PriceCheck, 0)
+							PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - FullBuyCT(PriceCheck, 1) - 650
+							If ReportBuys = True Then
+								Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), FullBuyCT(PriceCheck, 0), FullBuyCT(PriceCheck, 1) + 1000)
+							End If
+							GunBrought = True
+						End If
+					Next
+					If ForceBuy < Team2Force Then
+						For PriceCheck = PistolBuyCT.GetLength(0) - 1 To 0 Step -1
+							If PlayerMoney(BuyGuns) > 0 And PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1) > 0 And PlayerWeapons(0, BuyGuns) = "" Then
+								PlayerWeapons(PistolBuyCT(PriceCheck, 3), BuyGuns) = PistolBuyCT(PriceCheck, 0)
+								PlayerMoney(BuyGuns) = PlayerMoney(BuyGuns) - PistolBuyCT(PriceCheck, 1)
+								If ReportBuys = True Then
+									Console.WriteLine("{0} brought {1} for ${2}", Players(BuyGuns), PistolBuyCT(PriceCheck, 0), PistolBuyCT(PriceCheck, 1) + 1000)
+								End If
+								GunBrought = True
+							End If
+						Next
+					End If
+				Next
+			End If
+
+		End If
+		If FirstRun = True Then
+			FirstRun = False
+			BuyLogic(i, FirstRun)
+		End If
+
+		Return True
+	End Function
+
+	Function GetTable() As DataTable
+		' Create new DataTable instance.
+		Dim table As New DataTable
+
+		' Create four typed columns in the DataTable.
+		table.Columns.Add("Weapon", GetType(String))
+		table.Columns.Add("Count", GetType(Integer))
+		table.Columns.Add("Player", GetType(String))
+		table.Columns.Add("Player Index", GetType(Integer))
+		table.Columns.Add("Map", GetType(String))
+		table.Columns.Add("Map Index", GetType(Integer))
+		Return table
+	End Function
+
+	Function GetTableTotal() As DataTable
+		' Create new DataTable instance.
+		Dim table As New DataTable
+
+		' Create four typed columns in the DataTable.
+		table.Columns.Add("Weapon", GetType(String))
+		table.Columns.Add("Count", GetType(Integer))
+		table.Columns.Add("Player", GetType(String))
+		table.Columns.Add("Player Index", GetType(Integer))
+		Return table
+	End Function
+
+	Sub Stats()
+		Console.Clear()
+		Dim dataView As New DataView(PlayerKillsWeaponsTotal)
+		dataView.Sort = "Player Index DESC, Count DESC"
+		PlayerKillsWeaponsTotal = dataView.ToTable
+		Dim PreviousPlayer As String = Players(0)
+		For Each row As DataRow In PlayerKillsWeaponsTotal.Rows
+			If row.Field(Of String)(2) <> PreviousPlayer Then
+				For i = 0 To Console.WindowWidth - 1
+					Console.Write("=")
+				Next
+				Console.WriteLine("{0}:", row.Field(Of String)(2))
+				PreviousPlayer = row.Field(Of String)(2)
+			End If
+			For i = 0 To 4
+				If row.Field(Of String)(2) = Players(i) Then
+					Console.ForegroundColor = ConsoleColor.Blue
+					Exit For
+				Else
+					Console.ForegroundColor = ConsoleColor.Red
+				End If
+			Next
+			Console.WriteLine("{0} - {1} kills", row.Field(Of String)(0), row.Field(Of Integer)(1))
+			Console.ResetColor()
+		Next
+		For i = 0 To Console.WindowWidth - 1
+			Console.Write("=")
+		Next
+	End Sub
+
+	Sub StatsPerMap()
+		Console.Clear()
+		For i = 0 To Console.WindowWidth - 1
+			Console.Write("=")
+		Next
+		For j = 0 To MapsPlayedCounter
+			Console.WriteLine("Map {0}: {1}", j + 1, MapsPlayedList(j))
+			Dim dataView As New DataView(PlayerKillsWeapons)
+			dataView.Sort = "Player Index DESC, Count DESC"
+			PlayerKillsWeapons = dataView.ToTable
+			Dim PreviousPlayer As String = Players(0)
+			For Each row As DataRow In PlayerKillsWeapons.Rows
+				If row.Field(Of String)(2) <> PreviousPlayer Then
+					For i = 0 To Console.WindowWidth - 1
+						Console.Write("=")
+					Next
+					Console.WriteLine("{0} - {1}:", row.Field(Of String)(2), MapsPlayedList(j))
+					PreviousPlayer = row.Field(Of String)(2)
+				End If
+				For i = 0 To 4
+					If row.Field(Of String)(2) = Players(i) Then
+						Console.ForegroundColor = ConsoleColor.Blue
+						Exit For
+					Else
+						Console.ForegroundColor = ConsoleColor.Red
+					End If
+				Next
+				If row.Field(Of Integer)(5) = j Then
+					Console.WriteLine("{0} - {1} kills", row.Field(Of String)(0), row.Field(Of Integer)(1))
+				End If
+				Console.ResetColor()
+			Next
+			For i = 0 To Console.WindowWidth - 1
+				Console.Write("=")
+			Next
+		Next
 	End Sub
 
 	Sub GamesSimulated()
