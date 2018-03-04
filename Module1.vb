@@ -55,7 +55,7 @@ Module Module1
 	Public SupportedTeams(,) As String =
 	{{"G2", "shox", "apEX", "kennyS", "NBK-", "bodyy", "80"},
 	{"North", "MSL", "K0NFIG", "cajub", "aizy", "valde", "50"},
-	{"Thieving Esports", "smokeyy2k", "scuffyG", "GANDY", "khalifa", "Basher", "80"},
+	{"Thieving Esports", "smokeyy2k", "scuffyG", "hoogler", "khalifa", "Basher", "80"},
 	{"de_wey", "AaronM", "Hathus", "ArcherAce", "HizY", "MEERKAT", "80"},
 	{"fnatic", "flusha", "KRIMZ", "JW", "Golden", "Lekr0", "70"},
 	{"SK", "fer", "coldzera", "FalleN", "TACO", "felps", "60"},
