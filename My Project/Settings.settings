@@ -1,7 +1,49 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" UseMySettingsClassName="true">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="HalfTime" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="KnifeRound" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ClearConsole" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SlowDown" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ReportBuys" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SupportedTeams" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;{{"G2", "shox", "apEX", "kennyS", "NBK-", "bodyy", "80"},&lt;/string&gt;
+  &lt;string&gt;{"North", "MSL", "K0NFIG", "cajub", "aizy", "valde", "50"},&lt;/string&gt;
+  &lt;string&gt;{"Validus.GG", "fadeless", "smokey2k", "chewy", "Synisty", "murf", "80"},&lt;/string&gt;
+  &lt;string&gt;{"fnatic", "flusha", "KRIMZ", "JW", "Golden", "Lekr0", "70"},&lt;/string&gt;
+  &lt;string&gt;{"SK", "fer", "coldzera", "FalleN", "TACO", "felps", "60"},&lt;/string&gt;
+  &lt;string&gt;{"FaZe", "karrigan", "olofmeister", "Guardian", "NiKo", "rain", "65"},&lt;/string&gt;
+  &lt;string&gt;{"Astralis", "Xyp9x", "dupreeh", "device", "gla1ve", "Kjaerbye", "40"},&lt;/string&gt;
+  &lt;string&gt;{"Gambit", "AdreN", "Dosia", "mou", "HObbit", "fitch", "40"},&lt;/string&gt;
+  &lt;string&gt;{"Natus Vincere", "Edward", "Zeus", "seized", "flamie", "s1mple", "50"},&lt;/string&gt;
+  &lt;string&gt;{"Immortals", "kNgV-", "steel", "HEN1", "LUCAS1", "boltz", "90"},&lt;/string&gt;
+  &lt;string&gt;{"Virtus.Pro", "TaZ", "NEO", "pashaBiceps", "Snax", "byali", "30"},&lt;/string&gt;
+  &lt;string&gt;{"Cloud9", "Skadoodle", "RUSH", "tarik", "autimatic", "Stewie2K", "60"},&lt;/string&gt;
+  &lt;string&gt;{"EnVyUs", "SIXER", "RpK", "ScreaM", "Happy", "xms", "80"},&lt;/string&gt;
+  &lt;string&gt;{"NiP", "f0rest", "GeT_RiGhT", "Xizt", "draken", "REZ", "60"},&lt;/string&gt;
+  &lt;string&gt;{"BIG", "gob b", "LEGIJA", "tabseN", "keev", "nex", "60"},&lt;/string&gt;
+  &lt;string&gt;{"mousesports", "oskar", "chrisJ", "suNny", "STYKO", "ropz", "60"},&lt;/string&gt;
+  &lt;string&gt;{"Liquid", "nitr0", "jdm64", "stanislaw", "EliGE", "Twistzz", "60"},&lt;/string&gt;
+  &lt;string&gt;{"Heroic", "MODDII", "Snappi", "es3tag", "JUGi", "niko", "60"},&lt;/string&gt;
+  &lt;string&gt;{"CLG", "FNS", "reltuC", "Rickeh", "koosta", "nahtE", "60"},&lt;/string&gt;
+  &lt;string&gt;{"Renegades", "jks", "AZR", "NAF", "USTILO", "Nifty", "60"},&lt;/string&gt;
+  &lt;string&gt;{"HellRaisers", "ANGE1", "Zero", "woxic", "DeadFox", "ISSAA", "60"},&lt;/string&gt;
+  &lt;string&gt;{"FlipSid3", "markeloff", "B1ad3", "WorldEdit", "wayLander", "electronic", "60"},&lt;/string&gt;
+  &lt;string&gt;{"Space Soldiers", "MAJ3R", "XANTARES", "Calyx", "paz", "ngiN", "60"}}&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

@@ -1,32 +1,35 @@
-﻿Module Module1
-    Public Team1 As String
-    Public Team2 As String
-    Public Team1Score As Integer
-    Public Team2Score As Integer
-    Public Rand As New Random
-    Public RandomWinner As Integer = Rand.Next(0, 101)
-    Public HalfTime As Boolean = True
-    Public KnifeRound As Boolean = True
-    Public MapPool(6) As String
+﻿Imports System.IO
+Imports System.Runtime.Serialization.Formatters.Binary
+
+Module Module1
+	Public Team1 As String
+	Public Team2 As String
+	Public Team1Score As Integer
+	Public Team2Score As Integer
+	Public Rand As New Random
+	Public RandomWinner As Integer = Rand.Next(0, 101)
+	Public HalfTime As Boolean = My.Settings.HalfTime
+	Public KnifeRound As Boolean = My.Settings.KnifeRound
+	Public MapPool(6) As String
 	Public ScrambledMapPool(6) As String
 	Public SideCT As String
 	Public SideT As String
-    Public SideCTPercent As Integer
-    Public SideTPercent As Integer
-    Public Team1Side As String
-    Public Team2Side As String
+	Public SideCTPercent As Integer
+	Public SideTPercent As Integer
+	Public Team1Side As String
+	Public Team2Side As String
 	Public BestOf As Double
 	Public BestOfWin As Double
 	Public Team1Maps As Integer
 	Public Team2Maps As Integer
 	Public Map1Score As String
-    Public Map2Score As String
-    Public Map3Score As String
-    Public Map1Winner As String
-    Public Map2Winner As String
-    Public Map3Winner As String
-    Public Map1Loser As String
-    Public Map2Loser As String
+	Public Map2Score As String
+	Public Map3Score As String
+	Public Map1Winner As String
+	Public Map2Winner As String
+	Public Map3Winner As String
+	Public Map1Loser As String
+	Public Map2Loser As String
 	Public Map3Loser As String
 	Public MapWinners(6) As String
 	Public MapLosers(6) As String
@@ -48,11 +51,12 @@
 	Public Team2LossBonus As Integer = 1400
 	Public MapsPlayedCounter As Integer
 	Public MapsPlayedList(6) As String
-	Public ClearConsole As Boolean = False
+	Public ClearConsole As Boolean = My.Settings.ClearConsole
 	Public SupportedTeams(,) As String =
 	{{"G2", "shox", "apEX", "kennyS", "NBK-", "bodyy", "80"},
 	{"North", "MSL", "K0NFIG", "cajub", "aizy", "valde", "50"},
-	{"Validus.GG", "fadeless", "smokey2k", "chewy", "Synisty", "murf", "80"},
+	{"Thieving Esports", "smokeyy2k", "scuffyG", "GANDY", "khalifa", "Basher", "80"},
+	{"de_wey", "AaronM", "Hathus", "ArcherAce", "HizY", "MEERKAT", "80"},
 	{"fnatic", "flusha", "KRIMZ", "JW", "Golden", "Lekr0", "70"},
 	{"SK", "fer", "coldzera", "FalleN", "TACO", "felps", "60"},
 	{"FaZe", "karrigan", "olofmeister", "Guardian", "NiKo", "rain", "65"},
@@ -72,10 +76,12 @@
 	{"Renegades", "jks", "AZR", "NAF", "USTILO", "Nifty", "60"},
 	{"HellRaisers", "ANGE1", "Zero", "woxic", "DeadFox", "ISSAA", "60"},
 	{"FlipSid3", "markeloff", "B1ad3", "WorldEdit", "wayLander", "electronic", "60"},
-	{"Space Soldiers", "MAJ3R", "XANTARES", "Calyx", "paz", "ngiN", "60"}}
-	Public SlowDown As Boolean = False
+	{"Space Soldiers", "MAJ3R", "XANTARES", "Calyx", "paz", "ngiN", "60"},
+	{"AVANGAR", "qikert", "KrizzeN", "buster", "Jame", "dimasick", "60"},
+	{"Vega Squadron", "hutji", "jR", "keshandr", "mir", "chopper", "60"}}
+	Public SlowDown As Boolean = My.Settings.SlowDown
 	Public SimulateGames As Boolean = False
-	Public ReportBuys As Boolean = False
+	Public ReportBuys As Boolean = My.Settings.ReportBuys
 	Public FullBuyCT(,) As String =
 		{{"Famas", "2250", "300"},
 		{"M4", "3100", "300"},
@@ -99,8 +105,13 @@
 	Public DefaultPistols(,) As String =
 		{{"USP", "0", "300"},
 		{"Glock", "0", "300"}}
+	Public location As String = System.Environment.GetCommandLineArgs()(0)
+	Public appName As String = System.IO.Path.GetFileName(location)
+	Public Teams As String = System.AppDomain.CurrentDomain.BaseDirectory & "\" + appName + "_teams.txt"
+
 	Public Sub Main()
 		Console.Clear()
+
 		PlayerKillsWeapons.Clear()
 		PlayerKillsWeaponsTotal.Clear()
 		RandomWinner = Rand.Next(0, 101)
@@ -161,19 +172,13 @@
 			Case 3
 				Maps()
 			Case 4
-				If ChooseMaps = True Then
-					ChooseMaps = False
-				Else
-					ChooseMaps = True
-				End If
+				ChooseMaps = Not (ChooseMaps)
 				Main()
 			Case 5
-				If SimulateGames = True Then
-					SimulateGames = False
-				Else
-					SimulateGames = True
-				End If
+				SimulateGames = Not (SimulateGames)
 				Main()
+			Case 6
+				Pickem()
 			Case Else
 				Main()
 		End Select
@@ -190,41 +195,22 @@
 		Dim UserChoice As String = Console.ReadLine
 		Select Case UserChoice
 			Case 1
-				If HalfTime = True Then
-					HalfTime = False
-				Else
-					HalfTime = True
-				End If
+				HalfTime = Not (HalfTime)
 				Configure()
 			Case 2
-				If KnifeRound = True Then
-					KnifeRound = False
-				Else
-					KnifeRound = True
-				End If
+				KnifeRound = Not (KnifeRound)
 				Configure()
 			Case 3
-				If SlowDown = True Then
-					SlowDown = False
-				Else
-					SlowDown = True
-				End If
+				SlowDown = Not (SlowDown)
 				Configure()
 			Case 4
-				If ClearConsole = True Then
-					ClearConsole = False
-				Else
-					ClearConsole = True
-				End If
+				ClearConsole = Not (ClearConsole)
 				Configure()
 			Case 5
-				If ReportBuys = True Then
-					ReportBuys = False
-				Else
-					ReportBuys = True
-				End If
+				ReportBuys = Not (ReportBuys)
 				Configure()
 			Case 9
+				SaveSettings()
 				Main()
 			Case Else
 				Configure()
@@ -918,7 +904,7 @@
 						End If
 
 						If PlayersDeadListTeam2.Count = "5" Then
-								Team1Score = Team1Score + 1
+							Team1Score = Team1Score + 1
 							For PlayerBonus = 0 To 4
 								PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + 3250
 							Next
@@ -928,33 +914,33 @@
 							Next
 							Team2LossBonus = Team2LossBonus + 500
 							Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-								RoundOver = True
-							End If
-						Loop
-
-						'If RandomWinner >= SideTPercent Then
-						'    If SideCT = Team1 Then
-						'        Team1Score = Team1Score + 1
-						'        Console.WriteLine("{0} has taken the round.", Team1)
-						'        Console.WriteLine("The score is now ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-						'    Else
-						'        Team2Score = Team2Score + 1
-						'        Console.WriteLine("{0} has taken the round.", Team2)
-						'        Console.WriteLine("The score is now ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-						'    End If
-						'Else
-						'    If SideT = Team1 Then
-						'        Team1Score = Team1Score + 1
-						'        Console.WriteLine("{0} has taken the round.", Team1)
-						'        Console.WriteLine("The score is now ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-						'    Else
-						'        Team2Score = Team2Score + 1
-						'        Console.WriteLine("{0} has taken the round.", Team2)
-						'        Console.WriteLine("The score is now ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-						'    End If
-						'End If
-
+							RoundOver = True
+						End If
 					Loop
+
+					'If RandomWinner >= SideTPercent Then
+					'    If SideCT = Team1 Then
+					'        Team1Score = Team1Score + 1
+					'        Console.WriteLine("{0} has taken the round.", Team1)
+					'        Console.WriteLine("The score is now ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+					'    Else
+					'        Team2Score = Team2Score + 1
+					'        Console.WriteLine("{0} has taken the round.", Team2)
+					'        Console.WriteLine("The score is now ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+					'    End If
+					'Else
+					'    If SideT = Team1 Then
+					'        Team1Score = Team1Score + 1
+					'        Console.WriteLine("{0} has taken the round.", Team1)
+					'        Console.WriteLine("The score is now ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+					'    Else
+					'        Team2Score = Team2Score + 1
+					'        Console.WriteLine("{0} has taken the round.", Team2)
+					'        Console.WriteLine("The score is now ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+					'    End If
+					'End If
+
+				Loop
 
 				Sleeping()
 
@@ -1025,8 +1011,8 @@
 					System.Threading.Thread.Sleep(Rand.Next(3000, 6001))
 				End If
 			Else
-					'Winning Scores
-					Dim WinningScores(10) As Integer
+				'Winning Scores
+				Dim WinningScores(10) As Integer
 				WinningScores(0) = "16"
 				For WinningScoresLoop As Integer = 1 To 10 Step 1
 					WinningScores(WinningScoresLoop) = 16 + (5 * WinningScoresLoop)
@@ -2419,8 +2405,23 @@
 		Next
 	End Sub
 
+	Sub SaveSettings()
+		My.Settings.HalfTime = HalfTime
+		My.Settings.ReportBuys = ReportBuys
+		My.Settings.ClearConsole = ClearConsole
+		My.Settings.KnifeRound = KnifeRound
+		My.Settings.SlowDown = SlowDown
+		My.Settings.Save()
+	End Sub
+
 	Sub GamesSimulated()
 		'Pseudo
 		'Games Array that stores required values
+	End Sub
+
+	Sub Pickem()
+		Console.Clear()
+		Console.WriteLine("This is a simple pick-em generator inspired by the original version of this program. It will simply pick a winner each game at first but may use the whole stat system to get a full list of the players in the future.")
+		Console.WriteLine("This needs to be done but im lazy")
 	End Sub
 End Module

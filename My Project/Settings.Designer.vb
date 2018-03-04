@@ -13,44 +13,139 @@ Option Explicit On
 
 
 Namespace My
-
-    <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(), _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "11.0.0.0"), _
-     Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)> _
+    
+    <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0"),  _
+     Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
-
-        Private Shared defaultInstance As MySettings = CType(Global.System.Configuration.ApplicationSettingsBase.Synchronized(New MySettings), MySettings)
-
+        
+        Private Shared defaultInstance As MySettings = CType(Global.System.Configuration.ApplicationSettingsBase.Synchronized(New MySettings()),MySettings)
+        
 #Region "My.Settings Auto-Save Functionality"
 #If _MyType = "WindowsForms" Then
-        Private Shared addedHandler As Boolean
+    Private Shared addedHandler As Boolean
 
-        Private Shared addedHandlerLockObject As New Object
+    Private Shared addedHandlerLockObject As New Object
 
-        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(), Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)> _
-        Private Shared Sub AutoSaveSettings(ByVal sender As Global.System.Object, ByVal e As Global.System.EventArgs)
-            If My.Application.SaveMySettingsOnExit Then
-                My.Settings.Save()
-            End If
-        End Sub
+    <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(), Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)> _
+    Private Shared Sub AutoSaveSettings(sender As Global.System.Object, e As Global.System.EventArgs)
+        If My.Application.SaveMySettingsOnExit Then
+            My.Settings.Save()
+        End If
+    End Sub
 #End If
 #End Region
-
+        
         Public Shared ReadOnly Property [Default]() As MySettings
             Get
-
+                
 #If _MyType = "WindowsForms" Then
-                   If Not addedHandler Then
-                        SyncLock addedHandlerLockObject
-                            If Not addedHandler Then
-                                AddHandler My.Application.Shutdown, AddressOf AutoSaveSettings
-                                addedHandler = True
-                            End If
-                        End SyncLock
-                    End If
+               If Not addedHandler Then
+                    SyncLock addedHandlerLockObject
+                        If Not addedHandler Then
+                            AddHandler My.Application.Shutdown, AddressOf AutoSaveSettings
+                            addedHandler = True
+                        End If
+                    End SyncLock
+                End If
 #End If
                 Return defaultInstance
+            End Get
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property HalfTime() As Boolean
+            Get
+                Return CType(Me("HalfTime"),Boolean)
+            End Get
+            Set
+                Me("HalfTime") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property KnifeRound() As Boolean
+            Get
+                Return CType(Me("KnifeRound"),Boolean)
+            End Get
+            Set
+                Me("KnifeRound") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property ClearConsole() As Boolean
+            Get
+                Return CType(Me("ClearConsole"),Boolean)
+            End Get
+            Set
+                Me("ClearConsole") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property SlowDown() As Boolean
+            Get
+                Return CType(Me("SlowDown"),Boolean)
+            End Get
+            Set
+                Me("SlowDown") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property ReportBuys() As Boolean
+            Get
+                Return CType(Me("ReportBuys"),Boolean)
+            End Get
+            Set
+                Me("ReportBuys") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("<?xml version=""1.0"" encoding=""utf-16""?>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"<ArrayOfString xmlns:xsi=""http://www.w3."& _ 
+            "org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <s"& _ 
+            "tring>{{""G2"", ""shox"", ""apEX"", ""kennyS"", ""NBK-"", ""bodyy"", ""80""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <str"& _ 
+            "ing>{""North"", ""MSL"", ""K0NFIG"", ""cajub"", ""aizy"", ""valde"", ""50""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <str"& _ 
+            "ing>{""Validus.GG"", ""fadeless"", ""smokey2k"", ""chewy"", ""Synisty"", ""murf"", ""80""},</s"& _ 
+            "tring>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""fnatic"", ""flusha"", ""KRIMZ"", ""JW"", ""Golden"", ""Lekr0"", ""70""},<"& _ 
+            "/string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""SK"", ""fer"", ""coldzera"", ""FalleN"", ""TACO"", ""felps"", ""60""},<"& _ 
+            "/string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""FaZe"", ""karrigan"", ""olofmeister"", ""Guardian"", ""NiKo"", ""rai"& _ 
+            "n"", ""65""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Astralis"", ""Xyp9x"", ""dupreeh"", ""device"", ""gla1v"& _ 
+            "e"", ""Kjaerbye"", ""40""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Gambit"", ""AdreN"", ""Dosia"", ""mou"", """& _ 
+            "HObbit"", ""fitch"", ""40""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Natus Vincere"", ""Edward"", ""Zeus"","& _ 
+            " ""seized"", ""flamie"", ""s1mple"", ""50""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Immortals"", ""kNgV-"","& _ 
+            " ""steel"", ""HEN1"", ""LUCAS1"", ""boltz"", ""90""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Virtus.Pro"", """& _ 
+            "TaZ"", ""NEO"", ""pashaBiceps"", ""Snax"", ""byali"", ""30""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Cloud9"& _ 
+            """, ""Skadoodle"", ""RUSH"", ""tarik"", ""autimatic"", ""Stewie2K"", ""60""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <st"& _ 
+            "ring>{""EnVyUs"", ""SIXER"", ""RpK"", ""ScreaM"", ""Happy"", ""xms"", ""80""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <st"& _ 
+            "ring>{""NiP"", ""f0rest"", ""GeT_RiGhT"", ""Xizt"", ""draken"", ""REZ"", ""60""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  "& _ 
+            "<string>{""BIG"", ""gob b"", ""LEGIJA"", ""tabseN"", ""keev"", ""nex"", ""60""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <"& _ 
+            "string>{""mousesports"", ""oskar"", ""chrisJ"", ""suNny"", ""STYKO"", ""ropz"", ""60""},</stri"& _ 
+            "ng>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Liquid"", ""nitr0"", ""jdm64"", ""stanislaw"", ""EliGE"", ""Twistzz"", ""60"& _ 
+            """},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Heroic"", ""MODDII"", ""Snappi"", ""es3tag"", ""JUGi"", ""niko"","& _ 
+            " ""60""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""CLG"", ""FNS"", ""reltuC"", ""Rickeh"", ""koosta"", ""nahtE"""& _ 
+            ", ""60""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Renegades"", ""jks"", ""AZR"", ""NAF"", ""USTILO"", ""Nifty"& _ 
+            """, ""60""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""HellRaisers"", ""ANGE1"", ""Zero"", ""woxic"", ""DeadFox"& _ 
+            """, ""ISSAA"", ""60""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""FlipSid3"", ""markeloff"", ""B1ad3"", ""World"& _ 
+            "Edit"", ""wayLander"", ""electronic"", ""60""},</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <string>{""Space Soldiers"", "& _ 
+            """MAJ3R"", ""XANTARES"", ""Calyx"", ""paz"", ""ngiN"", ""60""}}</string>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"</ArrayOfString>")>  _
+        Public ReadOnly Property SupportedTeams() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("SupportedTeams"),Global.System.Collections.Specialized.StringCollection)
             End Get
         End Property
     End Class
