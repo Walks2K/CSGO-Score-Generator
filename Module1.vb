@@ -497,31 +497,30 @@ Module Module1
 							Next
 						End If
 					End If
-					If HalfTimes.Contains(i) And HalfTime = True Then
-						MapHalftimeScores(MapsPlayed, i / 15) = String.Join(" - ", Team1Score, Team2Score)
-						Dim Timer As Integer = 5
-						Sleeping()
-						If ClearConsole = True Then
-							Console.Clear()
-						End If
-						Console.WriteLine("Breaking for half time...")
-						Sleeping()
-						If SlowDown = True Then
-							For HalfTimeCount = 1 To 5
-								Console.WriteLine("Resuming in {0}...", Timer)
-								System.Threading.Thread.Sleep(1000)
-								Timer = Timer - 1
-								If HalfTimeCount = 5 Then
-									Console.Clear()
-								End If
-							Next
-						End If
-						Console.WriteLine("The score is currently ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-						Sleeping()
-					End If
+                    If HalfTimes.Contains(i) And HalfTime = True Then
+                        MapHalftimeScores(MapsPlayed, i / 15) = String.Join(" - ", Team1Score, Team2Score)
+                        Dim Timer As Integer = 5
+                        Sleeping()
+                        If ClearConsole = True Then
+                            Console.Clear()
+                        End If
+                        Console.WriteLine("Breaking for half time...")
+                        Sleeping()
+                        If SlowDown = True Then
+                            For HalfTimeCount = 1 To 5
+                                Console.WriteLine("Resuming in {0}...", Timer)
+                                System.Threading.Thread.Sleep(1000)
+                                Timer = Timer - 1
+                                If HalfTimeCount = 5 Then
+                                    Console.Clear()
+                                End If
+                            Next
+                        End If
+                        Sleeping()
+                    End If
 
-					'Pistol Round/Reset Logic
-					If PistolRounds.Contains(i) Then
+                    'Pistol Round/Reset Logic
+                    If PistolRounds.Contains(i) Then
 						For PlayerMoneyReset = 0 To 9
 							PlayerMoney(PlayerMoneyReset) = 150
 							PlayerWeapons(0, PlayerMoneyReset) = ""
@@ -575,14 +574,21 @@ Module Module1
 					If Team2Score = 45 And Team1Score < 45 Then
 						RandomWinner = 0
 					End If
-					For MoneyCheck = 0 To 9
-						If PlayerMoney(MoneyCheck) > 16000 Then
-							PlayerMoney(MoneyCheck) = 16000
-						End If
-					Next
-					Console.WriteLine("Round {0} has begun...", i)
-					Sleeping()
-					Dim PlayersAlive(9) As String
+                    For MoneyCheck = 0 To 9
+                        If PlayerMoney(MoneyCheck) > 16000 Then
+                            PlayerMoney(MoneyCheck) = 16000
+                        End If
+                    Next
+
+                    For Width = 0 To Console.WindowWidth - 1
+                        Console.Write("=")
+                    Next
+
+                    Console.WriteLine("Round {0} has begun...", i)
+                    Console.WriteLine("({0}) The score is currently ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+
+                    Sleeping()
+                    Dim PlayersAlive(9) As String
 					Dim RoundOver As Boolean = False
 					Dim Killer As Integer
 					Dim Victim As Integer
@@ -812,8 +818,8 @@ Module Module1
 							End If
 						Next
 
-						If PlayersDeadListTeam1.Count = "5" Then
-							Team2Score = Team2Score + 1
+                        If PlayersDeadListTeam1.Count = "5" Then
+                            Team2Score = Team2Score + 1
                             For PlayerBonus = 5 To 9
                                 PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + 3250
                             Next
@@ -830,11 +836,19 @@ Module Module1
                                 Team1LossBonus = Team1LossBonus + 500
                             End If
 
-                            Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-                                RoundOver = True
+                            'Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+                            If Team1 = SideCT Then
+                                Console.ForegroundColor = ConsoleColor.Blue
+                            Else
+                                Console.ForegroundColor = ConsoleColor.Red
                             End If
+                            Console.Write(vbCrLf + "{0}", Team1)
+                            Console.ResetColor()
+                            Console.Write(" has taken the round.")
+                            RoundOver = True
+                        End If
 
-                            If PlayersDeadListTeam2.Count = "5" Then
+                        If PlayersDeadListTeam2.Count = "5" Then
 							Team1Score = Team1Score + 1
                             For PlayerBonus = 0 To 4
                                 PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + 3250
@@ -852,10 +866,18 @@ Module Module1
                                 Team2LossBonus = Team2LossBonus + 500
                             End If
 
-                            Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+                            'Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+                            If Team2 = SideCT Then
+                                Console.ForegroundColor = ConsoleColor.Blue
+                            Else
+                                Console.ForegroundColor = ConsoleColor.Red
+                            End If
+                            Console.Write(vbCrLf + "{0}", Team2)
+                            Console.ResetColor()
+                            Console.Write(" has taken the round.")
                             RoundOver = True
-						End If
-					Loop
+                            End If
+                    Loop
 
 					'If RandomWinner >= SideTPercent Then
 					'    If SideCT = Team1 Then
@@ -1000,17 +1022,16 @@ Module Module1
 						Console.Clear()
 						Console.WriteLine("Breaking for half time...")
 						Sleeping()
-						For HalfTimeCount = 1 To 5
-							Console.WriteLine("Resuming in {0}...", Timer)
-							System.Threading.Thread.Sleep(1000)
-							Timer = Timer - 1
-							If HalfTimeCount = 5 Then
-								Console.Clear()
-							End If
-						Next
-						Console.WriteLine("The score is currently ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-						Sleeping()
-					End If
+                        For HalfTimeCount = 1 To 5
+                            Console.WriteLine("Resuming in {0}...", Timer)
+                            System.Threading.Thread.Sleep(1000)
+                            Timer = Timer - 1
+                            If HalfTimeCount = 5 Then
+                                Console.Clear()
+                            End If
+                        Next
+                        Sleeping()
+                    End If
 					'Begin round + round mechanics
 					RandomWinner = Rand.Next(0, 101)
 					If Team1Score = 45 And Team2Score < 45 Then
@@ -1019,8 +1040,14 @@ Module Module1
 					If Team2Score = 45 And Team1Score < 45 Then
 						RandomWinner = 0
 					End If
-					Console.WriteLine("Round {0} has begun...", i)
-					System.Threading.Thread.Sleep(Rand.Next(1000, 2001))
+                    For Width = 0 To Console.WindowWidth - 1
+                        Console.Write("=")
+                    Next
+
+                    Console.WriteLine("Round {0} has begun...", i)
+                    Console.WriteLine("({0}) The score is currently ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+
+                    System.Threading.Thread.Sleep(Rand.Next(1000, 2001))
 					If RandomWinner >= SideTPercent Then
 						If SideCT = Team1 Then
 							Team1Score = Team1Score + 1
@@ -1217,12 +1244,62 @@ Module Module1
 		Main()
 	End Sub
 	Sub Scoreboard(ByVal SideCT, ByVal SideT)
-		For i = 0 To Console.WindowWidth - 1
-			Console.Write("=")
-		Next
-		'Team1
-		Console.WriteLine("{0} K/D", Team1)
-		For i = 0 To 4
+        For i = 0 To Console.WindowWidth - 1
+            Console.Write("=")
+        Next
+        'Team1
+        Dim Team1Money As Integer = 0
+        Dim Team1Equipment As Integer = 0
+
+        For i = 0 To 4
+            Team1Money += PlayerMoney(i)
+            Dim PrimaryFound As Boolean = False
+            Dim SecondaryFound As Boolean = False
+
+            For FindPrimary = 0 To FullBuyCT.GetUpperBound(0)
+                If PlayerWeapons(0, i) = FullBuyCT(FindPrimary, 0) Then
+                    PrimaryFound = True
+                    Team1Equipment += FullBuyCT(FindPrimary, 1)
+                End If
+            Next
+
+            If PrimaryFound = False Then
+                For FindPrimary = 0 To FullBuyT.GetUpperBound(0)
+                    If PlayerWeapons(0, i) = FullBuyT(FindPrimary, 0) Then
+                        PrimaryFound = True
+                        Team1Equipment += FullBuyT(FindPrimary, 1)
+                    End If
+                Next
+            End If
+
+            For FindSecondary = 0 To DefaultPistols.GetUpperBound(0)
+                If PlayerWeapons(1, i) = DefaultPistols(FindSecondary, 0) Then
+                    SecondaryFound = True
+                    Team1Equipment += 200
+                End If
+            Next
+
+            If SecondaryFound = False Then
+                For FindSecondary = 0 To PistolBuyCT.GetUpperBound(0)
+                    If PlayerWeapons(1, i) = PistolBuyCT(FindSecondary, 0) And PistolBuyCT(FindSecondary, 3) = "1" Then
+                        SecondaryFound = True
+                        Team1Equipment += PistolBuyCT(FindSecondary, 1)
+                    End If
+                Next
+            End If
+
+            If SecondaryFound = False Then
+                For FindSecondary = 0 To PistolBuyT.GetUpperBound(0)
+                    If PlayerWeapons(1, i) = PistolBuyT(FindSecondary, 0) And PistolBuyT(FindSecondary, 3) = "1" Then
+                        SecondaryFound = True
+                        Team1Equipment += PistolBuyCT(FindSecondary, 1)
+                    End If
+                Next
+            End If
+        Next
+        Console.WriteLine("{0} / $ / K/D (Loss Bonus: ${1} / Team Money: ${2} / Equipment Value: ${3})", Team1, Team1LossBonus, Team1Money, Team1Equipment)
+
+        For i = 0 To 4
 			If Team1 = SideCT Then
 				Console.ForegroundColor = ConsoleColor.Blue
 			Else
@@ -1231,9 +1308,59 @@ Module Module1
 			Console.WriteLine("{0} ${1} {2}/{3} / Primary: {4} Secondary: {5}", Players(i), PlayerMoney(i), PlayerKills(i), PlayerDeaths(i), PlayerWeapons(0, i), PlayerWeapons(1, i))
 		Next
 		Console.ResetColor()
-		Console.WriteLine()
-		Console.WriteLine("{0} K/D", Team2)
-		For i = 5 To 9
+        Console.WriteLine()
+        Dim Team2Money As Integer = 0
+        Dim Team2Equipment As Integer = 0
+
+        For i = 5 To 9
+            Team2Money += PlayerMoney(i)
+            Dim PrimaryFound As Boolean = False
+            Dim SecondaryFound As Boolean = False
+
+            For FindPrimary = 0 To FullBuyCT.GetUpperBound(0)
+                If PlayerWeapons(0, i) = FullBuyCT(FindPrimary, 0) Then
+                    PrimaryFound = True
+                    Team2Equipment += FullBuyCT(FindPrimary, 1)
+                End If
+            Next
+
+            If PrimaryFound = False Then
+                For FindPrimary = 0 To FullBuyT.GetUpperBound(0)
+                    If PlayerWeapons(0, i) = FullBuyT(FindPrimary, 0) Then
+                        PrimaryFound = True
+                        Team2Equipment += FullBuyT(FindPrimary, 1)
+                    End If
+                Next
+            End If
+
+            For FindSecondary = 0 To DefaultPistols.GetUpperBound(0)
+                If PlayerWeapons(1, i) = DefaultPistols(FindSecondary, 0) Then
+                    SecondaryFound = True
+                    Team2Equipment += 200
+                End If
+            Next
+
+            If SecondaryFound = False Then
+                For FindSecondary = 0 To PistolBuyCT.GetUpperBound(0)
+                    If PlayerWeapons(1, i) = PistolBuyCT(FindSecondary, 0) And PistolBuyCT(FindSecondary, 3) = "1" Then
+                        SecondaryFound = True
+                        Team2Equipment += PistolBuyCT(FindSecondary, 1)
+                    End If
+                Next
+            End If
+
+            If SecondaryFound = False Then
+                For FindSecondary = 0 To PistolBuyT.GetUpperBound(0)
+                    If PlayerWeapons(1, i) = PistolBuyT(FindSecondary, 0) And PistolBuyT(FindSecondary, 3) = "1" Then
+                        SecondaryFound = True
+                        Team2Equipment += PistolBuyCT(FindSecondary, 1)
+                    End If
+                Next
+            End If
+        Next
+
+        Console.WriteLine("{0} / $ / K/D (Loss Bonus: ${1} / Total Money: ${2} / Equipment Value: ${3})", Team2, Team2LossBonus, Team2Money, Team2Equipment)
+        For i = 5 To 9
 			If Team2 = SideCT Then
 				Console.ForegroundColor = ConsoleColor.Blue
 			Else
@@ -1593,9 +1720,8 @@ Module Module1
 									End If
 								Next
 							End If
-							Console.WriteLine("The score is currently ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-							Sleeping()
-						End If
+                            Sleeping()
+                        End If
 						'Begin round + round mechanics
 						RandomWinner = Rand.Next(0, 101)
 						If Team1Score = 45 And Team2Score < 45 Then
@@ -1605,9 +1731,15 @@ Module Module1
 							RandomWinner = 0
 						End If
 						Scoreboard(SideCT, SideT)
-						Console.WriteLine("Round {0} has begun...", i)
-						Sleeping()
-						Dim PlayersAlive(9) As String
+                        For Width = 0 To Console.WindowWidth - 1
+                            Console.Write("=")
+                        Next
+
+                        Console.WriteLine("Round {0} has begun...", i)
+                        Console.WriteLine("({0}) The score is currently ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+
+                        Sleeping()
+                        Dim PlayersAlive(9) As String
 						Dim RoundOver As Boolean = False
 						Dim Killer As Integer
 						Dim Victim As Integer
@@ -1847,17 +1979,16 @@ Module Module1
 							Console.Clear()
 							Console.WriteLine("Breaking for half time...")
 							Sleeping()
-							For HalfTimeCount = 1 To 5
-								Console.WriteLine("Resuming in {0}...", Timer)
-								System.Threading.Thread.Sleep(1000)
-								Timer = Timer - 1
-								If HalfTimeCount = 5 Then
-									Console.Clear()
-								End If
-							Next
-							Console.WriteLine("The score is currently ({0}) {1}: {2} - ({3}) {4}: {5}", Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-							Sleeping()
-						End If
+                            For HalfTimeCount = 1 To 5
+                                Console.WriteLine("Resuming in {0}...", Timer)
+                                System.Threading.Thread.Sleep(1000)
+                                Timer = Timer - 1
+                                If HalfTimeCount = 5 Then
+                                    Console.Clear()
+                                End If
+                            Next
+                            Sleeping()
+                        End If
 						'Begin round + round mechanics
 						RandomWinner = Rand.Next(0, 101)
 						If Team1Score = 45 And Team2Score < 45 Then
@@ -1866,9 +1997,15 @@ Module Module1
 						If Team2Score = 45 And Team1Score < 45 Then
 							RandomWinner = 0
 						End If
-						Console.WriteLine("Round {0} has begun...", i)
-						System.Threading.Thread.Sleep(Rand.Next(1000, 2001))
-						If RandomWinner >= SideTPercent Then
+                        For Width = 0 To Console.WindowWidth - 1
+                            Console.Write("=")
+                        Next
+
+                        Console.WriteLine("Round {0} has begun...", i)
+                        Console.WriteLine("({0}) The score is currently ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+
+                        System.Threading.Thread.Sleep(Rand.Next(1000, 2001))
+                        If RandomWinner >= SideTPercent Then
 							If SideCT = Team1 Then
 								Team1Score = Team1Score + 1
 								Console.WriteLine("{0} has taken the round.", Team1)
@@ -2357,7 +2494,7 @@ Module Module1
         Team1 = Console.ReadLine
         Dim Team1Valid As Boolean = False
 
-        If (Convert.ToInt32(Team1) > 0) And (Convert.ToInt32(Team1) < SupportedTeams.GetUpperBound(0)) Then
+        If (Convert.ToInt32(Team1) > 0) And (Convert.ToInt32(Team1) < SupportedTeams.Length) Then
             Team1 = Convert.ToInt32(Team1 - 1)
             Team1Valid = True
             For i = 1 To 5
@@ -2405,7 +2542,7 @@ Module Module1
         Team2 = Console.ReadLine
         Dim Team2Valid As Boolean = False
 
-        If (Convert.ToInt32(Team2) > 0) And (Convert.ToInt32(Team2) < SupportedTeams.GetUpperBound(0)) Then
+        If (Convert.ToInt32(Team2) > 0) And (Convert.ToInt32(Team2) < SupportedTeams.Length) Then
             Team2 = Convert.ToInt32(Team2 - 1)
             Team2Valid = True
             For i = 6 To 10
