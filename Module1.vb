@@ -47,46 +47,31 @@ Module Module1
 	Public PlayerWeapons(1, 9)
 	Public Team1Force As Integer
 	Public Team2Force As Integer
-	Public Team1LossBonus As Integer = 1400
-	Public Team2LossBonus As Integer = 1400
-	Public MapsPlayedCounter As Integer
+    Public Team1LossBonus As Integer = 1900
+    Public Team2LossBonus As Integer = 1900
+    Public MapsPlayedCounter As Integer
 	Public MapsPlayedList(6) As String
 	Public ClearConsole As Boolean = My.Settings.ClearConsole
-	Public SupportedTeams(,) As String =
-	{{"G2", "shox", "apEX", "kennyS", "NBK-", "bodyy", "80"},
-	{"North", "MSL", "Kjaerbye", "cajunb", "aizy", "valde", "50"},
-	{"Thieving Esports", "smokeyy2k", "scuffyG", "hoogler", "khalifa", "Basher", "80"},
-	{"de_wey", "AaronM", "Hathus", "ArcherAce", "HizY", "MEERKAT", "80"},
-	{"fnatic", "flusha", "KRIMZ", "JW", "Golden", "Lekr0", "70"},
-	{"SK", "fer", "coldzera", "FalleN", "TACO", "boltz", "60"},
-	{"FaZe", "karrigan", "olofmeister", "Guardian", "NiKo", "rain", "65"},
-	{"Astralis", "Xyp9x", "dupreeh", "device", "gla1ve", "magisk", "40"},
-	{"Gambit", "AdreN", "Dosia", "mou", "HObbit", "fitch", "40"},
-	{"Natus Vincere", "Edward", "Zeus", "seized", "flamie", "s1mple", "50"},
-	{"NTC", "bit1", "steel", "HEN1", "LUCAS1", "felps", "90"},
-	{"Virtus.Pro", "TaZ", "NEO", "pashaBiceps", "Snax", "byali", "30"},
-	{"Cloud9", "Skadoodle", "RUSH", "tarik", "autimatic", "Stewie2K", "60"},
-	{"EnVyUs", "kio", "RpK", "ScreaM", "Happy", "hatji", "80"},
-	{"NiP", "f0rest", "GeT_RiGhT", "Dennis", "draken", "REZ", "60"},
-	{"BIG", "gob b", "LEGIJA", "tabseN", "keev", "nex", "60"},
-	{"mousesports", "oskar", "chrisJ", "suNny", "STYKO", "ropz", "60"},
-	{"Liquid", "nitr0", "jdm64", "stanislaw", "EliGE", "Twistzz", "60"},
-	{"Heroic", "MODDII", "Snappi", "es3tag", "JUGi", "niko", "60"},
-	{"CLG", "FNS", "reltuC", "Rickeh", "koosta", "nahtE", "60"},
-	{"Renegades", "jks", "AZR", "NAF", "USTILO", "Nifty", "60"},
-	{"HellRaisers", "ANGE1", "Zero", "woxic", "DeadFox", "ISSAA", "60"},
-	{"FlipSid3", "markeloff", "B1ad3", "WorldEdit", "wayLander", "electronic", "60"},
-	{"Space Soldiers", "MAJ3R", "XANTARES", "Calyx", "paz", "ngiN", "60"},
-	{"AVANGAR", "qikert", "KrizzeN", "buster", "Jame", "dimasick", "60"},
-	{"Vega Squadron", "hutji", "jR", "keshandr", "mir", "chopper", "60"}}
-	Public SlowDown As Boolean = My.Settings.SlowDown
+    Public SupportedTeams(,) As String =
+    {{"Astralis", "Xyp9x", "dupreeh", "gla1ve", "device", "Magisk", "40"},
+    {"Liquid", "nitr0", "NAF", "EliGE", "Stewie2K", "Twistzz", "70"},
+    {"Natus Vincere", "Edward", "Zeus", "flamie", "s1mple", "electronic", "70"},
+    {"ENCE", "allu", "Aerial", "xseveN", "Aleksib", "sergej", "70"},
+    {"FaZe", "AdreN", "olofmeister", "GuardiaN", "NiKo", "rain", "60"},
+    {"MIBR", "FalleN", "fer", "coldzera", "TACO", "felps", "55"},
+    {"Renegades", "jks", "AZR", "jkaem", "Gratisfaction", "Liazz", "50"},
+    {"NiP", "f0rest", "GeT_RiGhT", "draken", "Lekr0", "REZ", "55"},
+    {"Vitality", "NBK", "RpK", "apEX", "ALEX", "ZywOo", "65"},
+    {"Cloud9", "kioShiMa", "RUSH", "autimatic", "Golden", "Zellsis", "60"}}
+    Public SlowDown As Boolean = My.Settings.SlowDown
 	Public SimulateGames As Boolean = False
 	Public ReportBuys As Boolean = My.Settings.ReportBuys
-	Public FullBuyCT(,) As String =
-		{{"Famas", "2250", "300"},
-		{"M4", "3100", "300"},
-		{"AWP", "4750", "150"}}
-	Public FullBuyT(,) As String =
+    Public FullBuyCT(,) As String =
+        {{"Famas", "2250", "300"},
+        {"M4", "3100", "300"},
+        {"AUG", "3300", "300"},
+        {"AWP", "4750", "150"}}
+    Public FullBuyT(,) As String =
 		{{"UMP-45", "1200", "600"},
 		{"AK-47", "2700", "300"},
 		{"AWP", "4750", "300"}}
@@ -139,8 +124,8 @@ Module Module1
 			Next
 		Next
 		MapPool(0) = "Cache"
-		MapPool(1) = "Cobblestone"
-		MapPool(2) = "Inferno"
+        MapPool(1) = "Dust 2"
+        MapPool(2) = "Inferno"
 		MapPool(3) = "Mirage"
 		MapPool(4) = "Nuke"
 		MapPool(5) = "Overpass"
@@ -236,81 +221,19 @@ Module Module1
 		End While
 		Console.Clear()
 
-		If Overtime = "N" Then
-			Console.WriteLine("This is deprecated, returning to menu in...")
-			For i = 3 To 1 Step -1
-				Console.WriteLine("{0}...", i)
-				Threading.Thread.Sleep(1000)
-			Next
-			Main()
-		End If
+        If Overtime = "N" Then
+            Console.WriteLine("This is deprecated, returning to menu in...")
+            For i = 3 To 1 Step -1
+                Console.WriteLine("{0}...", i)
+                Threading.Thread.Sleep(1000)
+            Next
+            Main()
+        End If
 
-		Console.WriteLine("Please enter the name of the first team now.")
-		Team1 = Console.ReadLine
-		Dim Team1Valid As Boolean = False
+        'Get the teams that will be used for simulation
+        GetTeams()
 
-		For i As Integer = 0 To SupportedTeams.GetUpperBound(0)
-			If Team1 = SupportedTeams(i, 0) Then
-				Team1Valid = True
-				For j = 1 To 5
-					Players(j - 1) = SupportedTeams(i, j)
-				Next
-				Team1Force = SupportedTeams(i, 6)
-			End If
-		Next
-
-		If Team1Valid = False Then
-			For i = 0 To 5
-				If i < 5 Then
-					Console.WriteLine("Enter the name of player {0} now.", i + 1)
-					Players(i) = Console.ReadLine
-				Else
-					Console.WriteLine("Enter the chance of this team force buying now. (0% - 100%)")
-					Try
-						Team1Force = Console.ReadLine
-					Catch ex As Exception
-						Console.WriteLine("Not valid, resetting.")
-						Threading.Thread.Sleep(1000)
-						GameSetup()
-					End Try
-				End If
-			Next
-		End If
-		Console.Clear()
-
-		Console.WriteLine("Please enter the name of the second team now.")
-		Team2 = Console.ReadLine
-		Dim Team2Valid As Boolean = False
-
-		For i As Integer = 0 To SupportedTeams.GetUpperBound(0)
-			If Team2 = SupportedTeams(i, 0) Then
-				Team2Valid = True
-				For j = 1 To 5
-					Players(j + 4) = SupportedTeams(i, j)
-				Next
-				Team2Force = SupportedTeams(i, 6)
-			End If
-		Next
-
-		If Team2Valid = False Then
-			For i = 5 To 10
-				If i < 10 Then
-					Console.WriteLine("Enter the name of player {0} now.", i + 1)
-					Players(i) = Console.ReadLine
-				Else
-					Console.WriteLine("Enter the chance of this team force buying now. (0% - 100%)")
-					Try
-						Team2Force = Console.ReadLine
-					Catch ex As Exception
-						Console.WriteLine("Not valid, resetting.")
-						Threading.Thread.Sleep(1000)
-						GameSetup()
-					End Try
-				End If
-			Next
-		End If
-
-		Console.Clear()
+        Console.Clear()
 		Console.WriteLine("Enter the amount of maps required to win now. (1 = BO1, 3 = BO3 etc.)")
 		BestOf = Console.ReadLine
 		While BestOf < "1" And BestOf > "7"
@@ -337,8 +260,8 @@ Module Module1
 	End Sub
 	Sub OvertimeTrue()
 		MapPool(0) = "Cache"
-		MapPool(1) = "Cobblestone"
-		MapPool(2) = "Inferno"
+        MapPool(1) = "Dust 2"
+        MapPool(2) = "Inferno"
 		MapPool(3) = "Mirage"
 		MapPool(4) = "Nuke"
 		MapPool(5) = "Overpass"
@@ -418,12 +341,12 @@ Module Module1
 				SideTPercent = 51
 			End If
 
-			If ScrambledMapPool(MapsPlayed) = "Cobblestone" Then
-				SideCTPercent = 52
-				SideTPercent = 48
-			End If
+            If ScrambledMapPool(MapsPlayed) = "Dust 2" Then
+                SideCTPercent = 52
+                SideTPercent = 48
+            End If
 
-			If ScrambledMapPool(MapsPlayed) = "Mirage" Then
+            If ScrambledMapPool(MapsPlayed) = "Mirage" Then
 				SideCTPercent = 54
 				SideTPercent = 46
 			End If
@@ -539,10 +462,10 @@ Module Module1
 
 				Dim PistolRounds() As Integer = {1, 16}
 
-				'Start game
-				Team1LossBonus = 1400
-				Team2LossBonus = 1400
-				Dim i As Integer = 0
+                'Start game
+                Team1LossBonus = 1900
+                Team2LossBonus = 1900
+                Dim i As Integer = 0
 				For PlayerKillsInteger As Integer = 0 To 9
 					PlayerKills(PlayerKillsInteger) = 0
 					PlayerDeaths(PlayerKillsInteger) = 0
@@ -891,30 +814,46 @@ Module Module1
 
 						If PlayersDeadListTeam1.Count = "5" Then
 							Team2Score = Team2Score + 1
-							For PlayerBonus = 5 To 9
-								PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + 3250
-							Next
-							Team2LossBonus = 1400
-							For PlayerBonus = 0 To 4
-								PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + Team1LossBonus
-							Next
-							Team1LossBonus = Team1LossBonus + 500
-							Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-							RoundOver = True
-						End If
+                            For PlayerBonus = 5 To 9
+                                PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + 3250
+                            Next
 
-						If PlayersDeadListTeam2.Count = "5" Then
+                            If Team2LossBonus > 1400 Then
+                                Team2LossBonus -= 500
+                            End If
+
+                            For PlayerBonus = 0 To 4
+                                PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + Team1LossBonus
+                            Next
+
+                            If Team1LossBonus < 3400 Then
+                                Team1LossBonus = Team1LossBonus + 500
+                            End If
+
+                            Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+                                RoundOver = True
+                            End If
+
+                            If PlayersDeadListTeam2.Count = "5" Then
 							Team1Score = Team1Score + 1
-							For PlayerBonus = 0 To 4
-								PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + 3250
-							Next
-							Team1LossBonus = 1400
-							For PlayerBonus = 5 To 9
-								PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + Team2LossBonus
-							Next
-							Team2LossBonus = Team2LossBonus + 500
-							Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
-							RoundOver = True
+                            For PlayerBonus = 0 To 4
+                                PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + 3250
+                            Next
+
+                            If Team1LossBonus > 1400 Then
+                                Team1LossBonus -= 500
+                            End If
+
+                            For PlayerBonus = 5 To 9
+                                PlayerMoney(PlayerBonus) = PlayerMoney(PlayerBonus) + Team2LossBonus
+                            Next
+
+                            If Team2LossBonus < 3400 Then
+                                Team2LossBonus = Team2LossBonus + 500
+                            End If
+
+                            Console.WriteLine(vbCrLf + "({0}) The score is now ({1}) {2}: {3} - ({4}) {5}: {6}", ScrambledMapPool(MapsPlayed), Team1Side, Team1, Team1Score, Team2Side, Team2, Team2Score)
+                            RoundOver = True
 						End If
 					Loop
 
@@ -1236,8 +1175,8 @@ Module Module1
 	Sub Maps()
 		ChooseMaps = True
 		MapPool(0) = "Cache"
-		MapPool(1) = "Cobblestone"
-		MapPool(2) = "Inferno"
+        MapPool(1) = "Dust 2"
+        MapPool(2) = "Inferno"
 		MapPool(3) = "Mirage"
 		MapPool(4) = "Nuke"
 		MapPool(5) = "Overpass"
@@ -1408,8 +1347,8 @@ Module Module1
 
 	Sub Simulate()
 		MapPool(0) = "Cache"
-		MapPool(1) = "Cobblestone"
-		MapPool(2) = "Inferno"
+        MapPool(1) = "Dust 2"
+        MapPool(2) = "Inferno"
 		MapPool(3) = "Mirage"
 		MapPool(4) = "Nuke"
 		MapPool(5) = "Overpass"
@@ -1494,12 +1433,12 @@ Module Module1
 					SideTPercent = 51
 				End If
 
-				If ScrambledMapPool(MapsPlayed) = "Cobblestone" Then
-					SideCTPercent = 52
-					SideTPercent = 48
-				End If
+                If ScrambledMapPool(MapsPlayed) = "Dust 2" Then
+                    SideCTPercent = 52
+                    SideTPercent = 48
+                End If
 
-				If ScrambledMapPool(MapsPlayed) = "Mirage" Then
+                If ScrambledMapPool(MapsPlayed) = "Mirage" Then
 					SideCTPercent = 54
 					SideTPercent = 46
 				End If
@@ -2367,45 +2306,147 @@ Module Module1
 		Next
 	End Sub
 
-	Sub StatsPerMap()
-		Console.Clear()
-		For i = 0 To Console.WindowWidth - 1
-			Console.Write("=")
-		Next
-		For j = 0 To MapsPlayedCounter
-			Console.WriteLine("Map {0}: {1}", j + 1, MapsPlayedList(j))
-			Dim dataView As New DataView(PlayerKillsWeapons)
-			dataView.Sort = "Player Index DESC, Count DESC"
-			PlayerKillsWeapons = dataView.ToTable
-			Dim PreviousPlayer As String = Players(0)
-			For Each row As DataRow In PlayerKillsWeapons.Rows
-				If row.Field(Of String)(2) <> PreviousPlayer Then
-					For i = 0 To Console.WindowWidth - 1
-						Console.Write("=")
-					Next
-					Console.WriteLine("{0} - {1}:", row.Field(Of String)(2), MapsPlayedList(j))
-					PreviousPlayer = row.Field(Of String)(2)
-				End If
-				For i = 0 To 4
-					If row.Field(Of String)(2) = Players(i) Then
-						Console.ForegroundColor = ConsoleColor.Blue
-						Exit For
-					Else
-						Console.ForegroundColor = ConsoleColor.Red
-					End If
-				Next
-				If row.Field(Of Integer)(5) = j Then
-					Console.WriteLine("{0} - {1} kills", row.Field(Of String)(0), row.Field(Of Integer)(1))
-				End If
-				Console.ResetColor()
-			Next
-			For i = 0 To Console.WindowWidth - 1
-				Console.Write("=")
-			Next
-		Next
-	End Sub
+    Sub StatsPerMap()
+        Console.Clear()
+        For i = 0 To Console.WindowWidth - 1
+            Console.Write("=")
+        Next
+        For j = 0 To MapsPlayedCounter
+            Console.WriteLine("Map {0}: {1}", j + 1, MapsPlayedList(j))
+            Dim dataView As New DataView(PlayerKillsWeapons)
+            dataView.Sort = "Player Index DESC, Count DESC"
+            PlayerKillsWeapons = dataView.ToTable
+            Dim PreviousPlayer As String = Players(0)
+            For Each row As DataRow In PlayerKillsWeapons.Rows
+                If row.Field(Of String)(2) <> PreviousPlayer Then
+                    For i = 0 To Console.WindowWidth - 1
+                        Console.Write("=")
+                    Next
+                    Console.WriteLine("{0} - {1}:", row.Field(Of String)(2), MapsPlayedList(j))
+                    PreviousPlayer = row.Field(Of String)(2)
+                End If
+                For i = 0 To 4
+                    If row.Field(Of String)(2) = Players(i) Then
+                        Console.ForegroundColor = ConsoleColor.Blue
+                        Exit For
+                    Else
+                        Console.ForegroundColor = ConsoleColor.Red
+                    End If
+                Next
+                If row.Field(Of Integer)(5) = j Then
+                    Console.WriteLine("{0} - {1} kills", row.Field(Of String)(0), row.Field(Of Integer)(1))
+                End If
+                Console.ResetColor()
+            Next
+            For i = 0 To Console.WindowWidth - 1
+                Console.Write("=")
+            Next
+        Next
+    End Sub
 
-	Sub SaveSettings()
+    Sub PrintTeams()
+        For i = 0 To SupportedTeams.GetUpperBound(0)
+            Console.WriteLine("{0}. {1}", i + 1, SupportedTeams(i, 0))
+        Next
+    End Sub
+
+    Sub GetTeams()
+        PrintTeams()
+
+        Console.WriteLine("Please enter the name or number of the first team now.")
+        Team1 = Console.ReadLine
+        Dim Team1Valid As Boolean = False
+
+        If (Convert.ToInt32(Team1) > 0) And (Convert.ToInt32(Team1) < SupportedTeams.GetUpperBound(0)) Then
+            Team1 = Convert.ToInt32(Team1 - 1)
+            Team1Valid = True
+            For i = 1 To 5
+                Players(i - 1) = SupportedTeams(Convert.ToInt32(Team1), i)
+            Next
+            Team1Force = SupportedTeams(Convert.ToInt32(Team1), 6)
+            Team1 = SupportedTeams(Convert.ToInt32(Team1), 0)
+        End If
+
+        If Team1Valid = False Then
+            For i As Integer = 0 To SupportedTeams.GetUpperBound(0)
+                If Team1 = SupportedTeams(i, 0) Then
+                    Team1Valid = True
+                    For j = 1 To 5
+                        Players(j - 1) = SupportedTeams(i, j)
+                    Next
+                    Team1Force = SupportedTeams(i, 6)
+                End If
+            Next
+
+            If Team1Valid = False Then
+                For i = 0 To 5
+                    If i < 5 Then
+                        Console.WriteLine("Enter the name of player {0} now.", i + 1)
+                        Players(i) = Console.ReadLine
+                    Else
+                        Console.WriteLine("Enter the chance of this team force buying now. (0% - 100%)")
+                        Try
+                            Team1Force = Console.ReadLine
+                        Catch ex As Exception
+                            Console.WriteLine("Not valid, resetting.")
+                            Threading.Thread.Sleep(1000)
+                            GetTeams()
+                        End Try
+                    End If
+                Next
+            End If
+        End If
+
+        Console.Clear()
+
+        PrintTeams()
+
+        Console.WriteLine("Please enter the name or number of the second team now.")
+        Team2 = Console.ReadLine
+        Dim Team2Valid As Boolean = False
+
+        If (Convert.ToInt32(Team2) > 0) And (Convert.ToInt32(Team2) < SupportedTeams.GetUpperBound(0)) Then
+            Team2 = Convert.ToInt32(Team2 - 1)
+            Team2Valid = True
+            For i = 6 To 10
+                Players(i - 1) = SupportedTeams(Convert.ToInt32(Team2), i - 5)
+            Next
+            Team2Force = SupportedTeams(Convert.ToInt32(Team2), 6)
+            Team2 = SupportedTeams(Convert.ToInt32(Team2), 0)
+        End If
+
+        If Team2Valid = False Then
+            For i As Integer = 0 To SupportedTeams.GetUpperBound(0)
+                If Team2 = SupportedTeams(i, 0) Then
+                    Team2Valid = True
+                    For j = 6 To 10
+                        Players(j - 1) = SupportedTeams(i, j)
+                    Next
+                    Team2Force = SupportedTeams(i, 6)
+                End If
+            Next
+
+            If Team2Valid = False Then
+                For i = 5 To 10
+                    If i < 10 Then
+                        Console.WriteLine("Enter the name of player {0} now.", i + 1)
+                        Players(i) = Console.ReadLine
+                    Else
+                        Console.WriteLine("Enter the chance of this team force buying now. (0% - 100%)")
+                        Try
+                            Team2Force = Console.ReadLine
+                        Catch ex As Exception
+                            Console.WriteLine("Not valid, resetting.")
+                            Threading.Thread.Sleep(1000)
+                            GetTeams()
+                        End Try
+                    End If
+                Next
+            End If
+        End If
+    End Sub
+
+    Sub SaveSettings()
 		My.Settings.HalfTime = HalfTime
 		My.Settings.ReportBuys = ReportBuys
 		My.Settings.ClearConsole = ClearConsole
